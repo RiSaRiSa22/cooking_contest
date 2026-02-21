@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 1 of 3 (Foundation + Auth)
-Plan: 0 of 4 in current phase
-Status: Ready to plan
-Last activity: 2026-02-21 — Roadmap e STATE.md creati dopo inizializzazione progetto
+Plan: 1 of 4 in current phase
+Status: In progress
+Last activity: 2026-02-21 — Completed 01-01-PLAN.md (Vite scaffold + design system)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 10%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 1
+- Average duration: 4min
+- Total execution time: 4min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-foundation-auth | 1/4 | 4min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: —
+- Last 5 plans: 4min
 - Trend: —
 
 *Updated after each plan completion*
@@ -45,10 +45,13 @@ Recent decisions affecting current work:
 - [Pre-Phase 1]: HashRouter obbligatorio per GitHub Pages — BrowserRouter rompe deep link e QR join URL
 - [Pre-Phase 1]: Split SDK (letture anon) + Edge Functions (scritture + business logic) — RLS non sufficiente per integrità voti
 - [Pre-Phase 1]: dishes_public view nasconde participant_id e chef_name in fasi non-finished — protezione identità chef a livello DB
+- [01-01]: createHashRouter scelto su HashRouter component — data-router API, compatibilità loaders/actions future
+- [01-01]: Tailwind v4 @theme confermato — no tailwind.config.js, tutti i token in CSS
+- [01-01]: lib/ rimosso da .gitignore — il gitignore Python generato avrebbe ignorato silenziosamente src/lib/
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
@@ -58,6 +61,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-21
-Stopped at: Roadmap creato, pronto per plan-phase 1
+Last session: 2026-02-21T23:04:36Z
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None
