@@ -45,7 +45,7 @@ export function Modal({
       className={[
         'fixed inset-0 z-[1000]',
         'flex',
-        isCenter ? 'items-center justify-center' : 'items-end',
+        isCenter ? 'items-center justify-center' : 'items-end justify-center',
         'transition-opacity duration-300',
       ].join(' ')}
       style={{ background: 'rgba(26,18,8,.5)', backdropFilter: 'blur(4px)' }}

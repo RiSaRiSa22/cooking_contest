@@ -14,13 +14,17 @@ export interface Session {
   authenticatedAt: number       // Date.now()
 }
 
+export interface SessionWithExpiry extends Session {
+  expired: boolean
+}
+
 interface SessionStore {
   sessions: Record<string, Session>  // keyed by competitionCode
   addSession: (session: Session) => void
   getSession: (code: string) => Session | null
   removeSession: (code: string) => void
   clearExpired: () => void
-  getAllSessions: () => Session[]
+  getAllSessions: () => SessionWithExpiry[]
 }
 
 const TTL_MS = 2 * 60 * 60 * 1000  // 2 hours
@@ -61,9 +65,10 @@ export const useSessionStore = create<SessionStore>()(
         })),
 
       getAllSessions: () =>
-        Object.values(get().sessions).filter(
-          (sess) => Date.now() - sess.authenticatedAt <= TTL_MS
-        ),
+        Object.values(get().sessions).map((sess) => ({
+          ...sess,
+          expired: Date.now() - sess.authenticatedAt > TTL_MS,
+        })),
     }),
     { name: 'fornelli-sessions' }
   )

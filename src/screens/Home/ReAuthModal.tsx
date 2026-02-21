@@ -4,12 +4,12 @@ import { Button } from '../../components/ui/Button'
 import { PinInput } from '../../components/ui/PinInput'
 import { simpleHash } from '../../lib/hash'
 import { useAuth } from '../../hooks/useAuth'
-import type { Session } from '../../store/sessionStore'
+import type { SessionWithExpiry } from '../../store/sessionStore'
 
 interface ReAuthModalProps {
   isOpen: boolean
   onClose: () => void
-  session: Session | null
+  session: SessionWithExpiry | null
 }
 
 export function ReAuthModal({ isOpen, onClose, session }: ReAuthModalProps) {

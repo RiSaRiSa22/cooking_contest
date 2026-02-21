@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router'
 import { Button } from '../../components/ui/Button'
-import { useSessionStore, useHasHydrated, type Session } from '../../store/sessionStore'
+import { useSessionStore, useHasHydrated, type SessionWithExpiry } from '../../store/sessionStore'
 import { CreateCompModal } from './CreateCompModal'
 import { JoinCompModal } from './JoinCompModal'
 import { CompCreatedScreen } from './CompCreatedScreen'
@@ -17,26 +17,35 @@ export function HomeScreen() {
   const [deepLinkCode, setDeepLinkCode] = useState<string | undefined>(undefined)
   const [createdCode, setCreatedCode] = useState<string | null>(null)
   const [createdName, setCreatedName] = useState<string>('')
-  const [reAuthSession, setReAuthSession] = useState<Session | null>(null)
+  const [reAuthSession, setReAuthSession] = useState<SessionWithExpiry | null>(null)
 
   const sessions = hasHydrated ? getAllSessions() : []
 
-  // Deep link handling: /#/?code=ABC123&mode=join
+  // Deep link handling: /#/?code=ABC123&mode=join|reauth
   useEffect(() => {
     const code = searchParams.get('code')
     const mode = searchParams.get('mode')
 
-    if (code && mode === 'join') {
-      setDeepLinkCode(code.toUpperCase())
-      setShowJoin(true)
-      // Clear search params after reading
+    if (code) {
+      const upperCode = code.toUpperCase()
+      if (mode === 'reauth') {
+        const allSessions = getAllSessions()
+        const session = allSessions.find((s) => s.competitionCode === upperCode)
+        if (session) {
+          setReAuthSession(session)
+        } else {
+          setDeepLinkCode(upperCode)
+          setShowJoin(true)
+        }
+      } else if (mode === 'join') {
+        setDeepLinkCode(upperCode)
+        setShowJoin(true)
+      }
       setSearchParams({}, { replace: true })
     }
   }, []) // Run once on mount
 
-  const handleCompetitionClick = (session: Session) => {
-    // Check session is still valid by trying to get it from the store
-    // (store already handles expiry in getAllSessions)
+  const handleCompetitionClick = (session: SessionWithExpiry) => {
     setReAuthSession(session)
   }
 
@@ -127,13 +136,14 @@ export function HomeScreen() {
                   el.style.borderColor = 'rgba(255,255,255,0.10)'
                 }}
               >
-                <span className="text-[1.1rem]">🔥</span>
+                <span className={`text-[1.1rem] ${session.expired ? 'opacity-50' : ''}`}>🔥</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-parchment text-[0.9rem] font-semibold truncate">
+                  <p className={`text-parchment text-[0.9rem] font-semibold truncate ${session.expired ? 'opacity-60' : ''}`}>
                     {session.competitionName}
                   </p>
                   <p className="text-[0.72rem] mt-0.5" style={{ color: 'var(--color-ink-light)' }}>
                     {session.role === 'admin' ? '👑 Admin' : '👤 Partecipante'} · {session.competitionCode}
+                    {session.expired && ' · Sessione scaduta'}
                   </p>
                 </div>
                 <span className="text-[0.9rem]" style={{ color: 'var(--color-ink-light)' }}>›</span>

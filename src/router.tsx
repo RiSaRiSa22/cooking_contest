@@ -4,18 +4,22 @@ import { useSessionStore } from './store/sessionStore'
 
 /**
  * Route guard: checks that a valid session exists for this competition code.
- * If not, redirects to home with deep link params to trigger re-auth.
+ * If expired, redirects to home with mode=reauth (PIN-only).
+ * If missing, redirects to home with mode=join (full form).
  */
 function RequireSession({ children }: { children: React.ReactNode }) {
   const { code } = useParams<{ code: string }>()
+  const sessions = useSessionStore((s) => s.sessions)
   const getSession = useSessionStore((s) => s.getSession)
 
   if (!code) return <Navigate to="/" replace />
 
-  const session = getSession(code)
-  if (!session) {
-    // Redirect to home with deep link to re-auth
-    return <Navigate to={`/?code=${code}&mode=join`} replace />
+  const rawSession = sessions[code]
+  const validSession = getSession(code)
+
+  if (!validSession) {
+    const mode = rawSession ? 'reauth' : 'join'
+    return <Navigate to={`/?code=${code}&mode=${mode}`} replace />
   }
 
   return <>{children}</>
