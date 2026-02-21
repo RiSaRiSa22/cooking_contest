@@ -22,13 +22,13 @@ Tre fasi per costruire l'app completa: la Fase 1 getta le fondamenta tecniche e 
   3. Un ospite votante può entrare senza aggiungere un piatto
   4. Al ritorno, il modal re-auth riappare se la sessione localStorage (TTL 2h) è scaduta
   5. La home screen mostra le gare recenti salvate in localStorage e i CTA crea/entra
-**Plans**: TBD
+**Plans**: 4 plans in 3 waves
 
 Plans:
-- [ ] 01-01: Scaffold Vite + React + TypeScript, HashRouter, Tailwind v4, GitHub Actions deploy su gh-pages
-- [ ] 01-02: Schema Supabase (5 tabelle + dishes_public view + bucket), RLS policies, tipi TypeScript generati
-- [ ] 01-03: Design system (palette, tipografia, componenti base: bottoni pill, form inputs, PIN input, toast) + home screen
-- [ ] 01-04: Auth flow: Edge Functions competition-create e competition-join, sessionStore Zustand, modal re-auth
+- [ ] 01-01-PLAN.md — Scaffold Vite + React + TS + Tailwind v4 + HashRouter + GH Actions deploy (Wave 1)
+- [ ] 01-02-PLAN.md — Schema Supabase (6 tabelle + dishes_public view + bucket) + RLS + TypeScript types (Wave 1)
+- [ ] 01-03-PLAN.md — UI components (Button, Input, PinInput, Modal, Toast) + session store + home screen (Wave 2)
+- [ ] 01-04-PLAN.md — Auth Edge Functions + create/join/re-auth modals + deep links + routing (Wave 3)
 
 ### Phase 2: Admin + Dishes
 **Goal**: L'admin ha pieno controllo sulla gara — può gestire piatti, partecipanti, fase e impostazioni
