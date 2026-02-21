@@ -1,20 +1,65 @@
-import { useNavigate } from 'react-router'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router'
 import { Button } from '../../components/ui/Button'
 import { useSessionStore, useHasHydrated, type Session } from '../../store/sessionStore'
+import { CreateCompModal } from './CreateCompModal'
+import { JoinCompModal } from './JoinCompModal'
+import { CompCreatedScreen } from './CompCreatedScreen'
+import { ReAuthModal } from './ReAuthModal'
 
 export function HomeScreen() {
-  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const hasHydrated = useHasHydrated()
   const getAllSessions = useSessionStore((s) => s.getAllSessions)
 
+  const [showCreate, setShowCreate] = useState(false)
+  const [showJoin, setShowJoin] = useState(false)
+  const [deepLinkCode, setDeepLinkCode] = useState<string | undefined>(undefined)
+  const [createdCode, setCreatedCode] = useState<string | null>(null)
+  const [createdName, setCreatedName] = useState<string>('')
+  const [reAuthSession, setReAuthSession] = useState<Session | null>(null)
+
   const sessions = hasHydrated ? getAllSessions() : []
 
-  const handleCompetitionClick = (session: Session) => {
-    if (session.role === 'admin') {
-      navigate(`/admin/${session.competitionCode}`)
-    } else {
-      navigate(`/voter/${session.competitionCode}`)
+  // Deep link handling: /#/?code=ABC123&mode=join
+  useEffect(() => {
+    const code = searchParams.get('code')
+    const mode = searchParams.get('mode')
+
+    if (code && mode === 'join') {
+      setDeepLinkCode(code.toUpperCase())
+      setShowJoin(true)
+      // Clear search params after reading
+      setSearchParams({}, { replace: true })
     }
+  }, []) // Run once on mount
+
+  const handleCompetitionClick = (session: Session) => {
+    // Check session is still valid by trying to get it from the store
+    // (store already handles expiry in getAllSessions)
+    setReAuthSession(session)
+  }
+
+  const handleCreateSuccess = (code: string, competitionName: string) => {
+    setShowCreate(false)
+    setCreatedCode(code)
+    setCreatedName(competitionName)
+  }
+
+  const handleJoinClose = () => {
+    setShowJoin(false)
+    setDeepLinkCode(undefined)
+  }
+
+  // If we just created a competition, show the success screen
+  if (createdCode) {
+    return (
+      <CompCreatedScreen
+        code={createdCode}
+        competitionName={createdName}
+        onBack={() => setCreatedCode(null)}
+      />
+    )
   }
 
   return (
@@ -100,13 +145,32 @@ export function HomeScreen() {
 
       {/* CTA actions */}
       <div className="flex flex-col gap-3 pb-16 px-[18px] max-w-md mx-auto w-full sm:flex-row sm:max-w-lg sm:gap-4">
-        <Button variant="ember" size="full">
+        <Button variant="ember" size="full" onClick={() => setShowCreate(true)}>
           ✨ Crea nuova gara
         </Button>
-        <Button variant="ghost-light" size="full">
+        <Button variant="ghost-light" size="full" onClick={() => setShowJoin(true)}>
           🔗 Entra con codice
         </Button>
       </div>
+
+      {/* Modals */}
+      <CreateCompModal
+        isOpen={showCreate}
+        onClose={() => setShowCreate(false)}
+        onSuccess={handleCreateSuccess}
+      />
+
+      <JoinCompModal
+        isOpen={showJoin}
+        onClose={handleJoinClose}
+        initialCode={deepLinkCode}
+      />
+
+      <ReAuthModal
+        isOpen={Boolean(reAuthSession)}
+        onClose={() => setReAuthSession(null)}
+        session={reAuthSession}
+      />
     </div>
   )
 }
