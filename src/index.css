@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors — generates bg-ink, text-ink, border-ink, etc. */
+  --color-ink:            #1A1208;
+  --color-ink-mid:        #4A3828;
+  --color-ink-light:      #8B6E56;
+
+  --color-parchment:      #FBF6EE;
+  --color-parchment-dark: #F0E8D8;
+  --color-parchment-deep: #E4D5BF;
+
+  --color-ember:          #C44B1B;
+  --color-ember-light:    #E8683A;
+
+  --color-gold:           #C9991F;
+  --color-gold-light:     #E5BC4A;
+
+  --color-sage:           #5C7A5A;
+  --color-sage-light:     #7FA87D;
+
+  /* Fonts — generates font-display, font-body */
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body:    'Outfit', sans-serif;
+
+  /* Border radius */
+  --radius-card: 20px;
+  --radius-sm:   12px;
+  --radius-pill: 50px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 12px rgba(26,18,8,.08);
+  --shadow-md: 0 6px 28px rgba(26,18,8,.13);
+  --shadow-lg: 0 16px 56px rgba(26,18,8,.2);
+  --shadow-xl: 0 32px 80px rgba(26,18,8,.28);
+
+  /* Animations */
+  --animate-screen-in: screenIn 0.35s ease;
+  --animate-sheet-up:  sheetUp 0.3s ease;
+  --animate-fade-up:   fadeUp 0.3s ease;
+  --animate-pop-in:    popIn 0.3s ease;
+  --animate-flicker:   flicker 3s infinite alternate;
+  --animate-pulse:     pulse 1.5s infinite;
+  --animate-spin:      spin 0.7s linear infinite;
+
+  @keyframes screenIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @keyframes sheetUp {
+    from { transform: translateY(100%); }
+    to   { transform: none; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(.92); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes flicker {
+    0%   { transform: scale(1) rotate(-1deg);     filter: drop-shadow(0 0 30px rgba(232,104,58,.6)); }
+    100% { transform: scale(1.06) rotate(1.5deg); filter: drop-shadow(0 0 50px rgba(201,153,31,.8)); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1);   opacity: 1; }
+    50%       { transform: scale(1.4); opacity: .7; }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-parchment);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Grain texture overlay — fractalNoise, baseFrequency 0.85, 4 octaves */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23grain)' opacity='0.035'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
