@@ -1,9 +1,10 @@
 import { createHashRouter, RouterProvider } from 'react-router'
+import { HomeScreen } from './screens/Home/HomeScreen'
 
 const router = createHashRouter([
   {
     path: '/',
-    element: <div>Home</div>,
+    element: <HomeScreen />,
   },
   {
     path: '/admin/:code',
