@@ -95,47 +95,47 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| AUTH-05 | — | Pending |
-| AUTH-06 | — | Pending |
-| COMP-01 | — | Pending |
-| COMP-02 | — | Pending |
-| COMP-03 | — | Pending |
-| DISH-01 | — | Pending |
-| DISH-02 | — | Pending |
-| DISH-03 | — | Pending |
-| DISH-04 | — | Pending |
-| DISH-05 | — | Pending |
-| DISH-06 | — | Pending |
-| VOTE-01 | — | Pending |
-| VOTE-02 | — | Pending |
-| VOTE-03 | — | Pending |
-| VOTE-04 | — | Pending |
-| VOTE-05 | — | Pending |
-| SHAR-01 | — | Pending |
-| SHAR-02 | — | Pending |
-| SHAR-03 | — | Pending |
-| ADMN-01 | — | Pending |
-| ADMN-02 | — | Pending |
-| ADMN-03 | — | Pending |
-| ADMN-04 | — | Pending |
-| VOTR-01 | — | Pending |
-| VOTR-02 | — | Pending |
-| VOTR-03 | — | Pending |
-| VOTR-04 | — | Pending |
-| UIDN-01 | — | Pending |
-| UIDN-02 | — | Pending |
-| UIDN-03 | — | Pending |
-| UIDN-04 | — | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Pending |
+| AUTH-05 | Phase 1 | Pending |
+| AUTH-06 | Phase 1 | Pending |
+| COMP-01 | Phase 2 | Pending |
+| COMP-02 | Phase 2 | Pending |
+| COMP-03 | Phase 2 | Pending |
+| DISH-01 | Phase 2 | Pending |
+| DISH-02 | Phase 2 | Pending |
+| DISH-03 | Phase 2 | Pending |
+| DISH-04 | Phase 2 | Pending |
+| DISH-05 | Phase 2 | Pending |
+| DISH-06 | Phase 2 | Pending |
+| VOTE-01 | Phase 3 | Pending |
+| VOTE-02 | Phase 3 | Pending |
+| VOTE-03 | Phase 3 | Pending |
+| VOTE-04 | Phase 3 | Pending |
+| VOTE-05 | Phase 3 | Pending |
+| SHAR-01 | Phase 3 | Pending |
+| SHAR-02 | Phase 3 | Pending |
+| SHAR-03 | Phase 1 | Pending |
+| ADMN-01 | Phase 2 | Pending |
+| ADMN-02 | Phase 2 | Pending |
+| ADMN-03 | Phase 2 | Pending |
+| ADMN-04 | Phase 2 | Pending |
+| VOTR-01 | Phase 3 | Pending |
+| VOTR-02 | Phase 3 | Pending |
+| VOTR-03 | Phase 3 | Pending |
+| VOTR-04 | Phase 3 | Pending |
+| UIDN-01 | Phase 1 | Pending |
+| UIDN-02 | Phase 1 | Pending |
+| UIDN-03 | Phase 1 | Pending |
+| UIDN-04 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 35 total
-- Mapped to phases: 0
-- Unmapped: 35 ⚠️
+- Mapped to phases: 35
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-21*
-*Last updated: 2026-02-21 after initial definition*
+*Last updated: 2026-02-21 after roadmap creation*
