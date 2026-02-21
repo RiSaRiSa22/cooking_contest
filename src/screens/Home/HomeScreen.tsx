@@ -19,11 +19,11 @@ export function HomeScreen() {
 
   return (
     <div
-      className="min-h-screen flex flex-col max-w-[480px] mx-auto px-[18px]"
+      className="min-h-screen flex flex-col"
       style={{ background: 'var(--color-ink)' }}
     >
       {/* Hero section */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
+      <div className="flex-1 flex flex-col items-center justify-center text-center py-12 px-[18px]">
         {/* Flame emoji with flicker animation */}
         <div
           className="text-[72px] mb-6 animate-flicker"
@@ -54,14 +54,14 @@ export function HomeScreen() {
 
       {/* Recent competitions list */}
       {sessions.length > 0 && (
-        <div className="mb-6">
+        <div className="mb-6 px-[18px] max-w-3xl mx-auto w-full">
           <p
             className="text-[0.68rem] uppercase tracking-[0.12em] mb-3"
             style={{ color: 'var(--color-ink-light)' }}
           >
             Le tue gare
           </p>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sm:grid sm:grid-cols-2 lg:grid-cols-3">
             {sessions.map((session) => (
               <button
                 key={session.competitionCode}
@@ -99,7 +99,7 @@ export function HomeScreen() {
       )}
 
       {/* CTA actions */}
-      <div className="flex flex-col gap-3 pb-16">
+      <div className="flex flex-col gap-3 pb-16 px-[18px] max-w-md mx-auto w-full sm:flex-row sm:max-w-lg sm:gap-4">
         <Button variant="ember" size="full">
           ✨ Crea nuova gara
         </Button>

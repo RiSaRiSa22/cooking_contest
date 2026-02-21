@@ -53,7 +53,7 @@ export function Modal({
     >
       <div
         className={[
-          'bg-parchment w-full max-w-[480px]',
+          'bg-parchment w-full max-w-[480px] sm:max-w-lg lg:max-w-xl',
           'max-h-[92vh] overflow-y-auto',
           'px-5 pb-10 pt-6',
           'animate-sheet-up',
