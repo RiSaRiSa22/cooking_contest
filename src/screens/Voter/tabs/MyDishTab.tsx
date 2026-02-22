@@ -3,6 +3,8 @@ import { useVoterStore } from '../../../store/voterStore'
 import { usePhotoUpload } from '../../../hooks/usePhotoUpload'
 import { useToast } from '../../../components/ui/Toast'
 import { supabase } from '../../../lib/supabase'
+import { Button } from '../../../components/ui/Button'
+import { AddMyDishModal } from '../modals/AddMyDishModal'
 
 export function MyDishTab() {
   const dishes = useVoterStore((s) => s.dishes)
@@ -15,6 +17,7 @@ export function MyDishTab() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showAddDish, setShowAddDish] = useState(false)
 
   const phase = competition?.phase ?? 'preparation'
 
@@ -26,16 +29,21 @@ export function MyDishTab() {
   // Empty state per ospiti o partecipanti senza piatto
   if (!myDishId) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 px-6 gap-3 text-center">
-        <span className="text-5xl">👀</span>
-        <h3 className="font-display text-lg font-semibold text-ink">Nessun piatto</h3>
-        <p className="font-body text-sm" style={{ color: 'var(--color-ink-light)' }}>
-          Non hai aggiunto un piatto a questa gara.
+      <>
+        <div className="flex flex-col items-center justify-center py-16 px-6 gap-4 text-center">
+          <span className="text-5xl">👀</span>
+          <h3 className="font-display text-lg font-semibold text-ink">Nessun piatto</h3>
+          <p className="font-body text-sm" style={{ color: 'var(--color-ink-light)' }}>
+            Non hai ancora aggiunto un piatto a questa gara.
+          </p>
           {competition?.phase === 'preparation' && (
-            <> Puoi aggiungerlo dal pannello admin.</>
+            <Button variant="ember" size="default" onClick={() => setShowAddDish(true)}>
+              🍽️ Aggiungi il tuo piatto
+            </Button>
           )}
-        </p>
-      </div>
+        </div>
+        <AddMyDishModal open={showAddDish} onClose={() => setShowAddDish(false)} />
+      </>
     )
   }
 
