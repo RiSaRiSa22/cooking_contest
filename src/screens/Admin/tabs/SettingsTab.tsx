@@ -46,6 +46,7 @@ export function SettingsTab() {
   const competition = useCompetitionStore((s) => s.competition)
   const dishes = useCompetitionStore((s) => s.dishes)
   const participants = useCompetitionStore((s) => s.participants)
+  const voteCounts = useCompetitionStore((s) => s.voteCounts)
   const updatePhase = useCompetitionStore((s) => s.updatePhase)
 
   const { showToast } = useAppToast()
@@ -53,8 +54,19 @@ export function SettingsTab() {
   const [isLoading, setIsLoading] = useState(false)
 
   const phase = competition?.phase ?? 'preparation'
+
+  // Total votes from real vote counts
+  const totalVotes = Array.from(voteCounts.values()).reduce((sum, c) => sum + c, 0)
+
+  // Adaptive share URLs: join for preparation/finished, vote for voting
   const joinUrl = `${window.location.origin}${window.location.pathname}#/?code=${competition?.code ?? ''}&mode=join`
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(joinUrl)}&size=200x200`
+  const voteUrl = `${window.location.origin}${window.location.pathname}#/?code=${competition?.code ?? ''}&mode=vote`
+  const shareUrl = phase === 'voting' ? voteUrl : joinUrl
+
+  // QR code adapts to current phase
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(shareUrl)}&size=200x200`
+
+  const shareLinkLabel = phase === 'voting' ? '🔗 Condividi link votazione' : '🔗 Condividi link join'
 
   async function copyCode() {
     try {
@@ -67,7 +79,7 @@ export function SettingsTab() {
 
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(joinUrl)
+      await navigator.clipboard.writeText(shareUrl)
       showToast('Link copiato negli appunti!', 'success')
     } catch {
       showToast('Errore durante la copia del link', 'error')
@@ -144,18 +156,22 @@ export function SettingsTab() {
         </div>
 
         <Button variant="ghost-dark" size="sm" onClick={copyLink} className="w-full">
-          🔗 Condividi link
+          {shareLinkLabel}
         </Button>
 
         {competition?.code && (
-          <div className="flex justify-center pt-2">
+          <div className="flex flex-col items-center gap-2 pt-2">
             <img
               src={qrUrl}
-              alt={`QR code per il codice ${competition.code}`}
+              alt={`QR code per ${phase === 'voting' ? 'votazione' : 'partecipare alla'} gara ${competition.code}`}
               width={160}
               height={160}
               className="rounded-lg"
             />
+            {/* Link testuale per debug/verifica */}
+            <p className="font-body text-xs break-all text-center" style={{ color: 'var(--color-ink-light)' }}>
+              {shareUrl}
+            </p>
           </div>
         )}
       </section>
@@ -193,7 +209,7 @@ export function SettingsTab() {
           <div className="flex flex-col items-center gap-1 p-3 rounded-xl" style={{ background: 'var(--color-parchment)' }}>
             <span className="text-2xl">🗳️</span>
             <span className="font-display text-xl font-bold" style={{ color: 'var(--color-ink)' }}>
-              —
+              {totalVotes}
             </span>
             <span className="font-body text-xs" style={{ color: 'var(--color-ink-light)' }}>
               Voti
