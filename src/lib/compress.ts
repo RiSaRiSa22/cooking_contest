@@ -132,10 +132,13 @@ function applyExifTransform(
  * Uses browser Canvas API — no external dependencies.
  */
 export async function compressImage(file: File): Promise<Blob> {
+  let alreadyConvertedHeic = false
+
   // Convert HEIC/HEIF to JPEG first (Chrome/Android can't decode HEIC natively)
   if (isHeic(file)) {
     try {
       file = await convertHeicToJpeg(file)
+      alreadyConvertedHeic = true
     } catch {
       throw new Error('Impossibile convertire il file HEIC. Prova a scattare la foto in formato JPEG dalle impostazioni fotocamera.')
     }
@@ -202,13 +205,47 @@ export async function compressImage(file: File): Promise<Blob> {
         )
       }
 
-      img.onerror = () => {
+      img.onerror = async () => {
         URL.revokeObjectURL(url)
-        reject(
-          new Error(
-            'Impossibile leggere il file immagine. Verifica che sia un formato supportato (JPEG, PNG, WebP).'
-          )
-        )
+
+        // Fallback: il file potrebbe essere HEIC con MIME type errato (es. application/octet-stream)
+        if (!alreadyConvertedHeic) {
+          try {
+            const converted = await convertHeicToJpeg(file)
+            const retryUrl = URL.createObjectURL(converted)
+            const retryImg = new Image()
+            retryImg.onload = () => {
+              URL.revokeObjectURL(retryUrl)
+              // Riuso lo stesso canvas pipeline
+              const rScale = Math.min(1, MAX_PX / Math.max(retryImg.width, retryImg.height))
+              const rW = Math.round(retryImg.width * rScale)
+              const rH = Math.round(retryImg.height * rScale)
+              const c = document.createElement('canvas')
+              c.width = rW
+              c.height = rH
+              const rCtx = c.getContext('2d')
+              if (!rCtx) {
+                reject(new Error('Impossibile creare il contesto canvas. Riprova o usa un altro browser.'))
+                return
+              }
+              rCtx.drawImage(retryImg, 0, 0, rW, rH)
+              c.toBlob(
+                (b) => b ? resolve(b) : reject(new Error('Compressione fallita. Prova con un altro file.')),
+                'image/jpeg',
+                QUALITY
+              )
+            }
+            retryImg.onerror = () => {
+              URL.revokeObjectURL(retryUrl)
+              reject(new Error('Formato immagine non supportato. Prova con JPEG o PNG.'))
+            }
+            retryImg.src = retryUrl
+          } catch {
+            reject(new Error('Formato immagine non supportato. Prova con JPEG o PNG.'))
+          }
+        } else {
+          reject(new Error('Formato immagine non supportato. Prova con JPEG o PNG.'))
+        }
       }
 
       img.src = url
