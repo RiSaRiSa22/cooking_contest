@@ -1,41 +1,198 @@
-const MAX_PX = 800
-const QUALITY = 0.72
+const MAX_PX = 1200
+const QUALITY = 0.82
 
 /**
- * Compresses an image File to JPEG at max 800px (longest side) and 0.72 quality.
+ * Reads the EXIF orientation tag from a JPEG file.
+ * Returns a value 1-8, or 1 (no-op) if not found or not a JPEG.
+ * Ref: https://exiftool.org/TagNames/EXIF.html (Orientation tag = 0x0112)
+ */
+function readExifOrientation(buffer: ArrayBuffer): number {
+  const view = new DataView(buffer)
+
+  // Must start with JPEG SOI marker 0xFFD8
+  if (view.getUint16(0) !== 0xffd8) return 1
+
+  let offset = 2
+  const length = buffer.byteLength
+
+  while (offset < length - 2) {
+    const marker = view.getUint16(offset)
+    offset += 2
+
+    // APP1 segment (0xFFE1) is where EXIF lives
+    if (marker === 0xffe1) {
+      const segmentLength = view.getUint16(offset)
+      offset += 2
+
+      // Check for "Exif\0\0" header
+      if (view.getUint32(offset) !== 0x45786966 || view.getUint16(offset + 4) !== 0) {
+        offset += segmentLength - 2
+        continue
+      }
+
+      const tiffOffset = offset + 6
+
+      // Byte order: 0x4949 = little-endian, 0x4D4D = big-endian
+      const littleEndian = view.getUint16(tiffOffset) === 0x4949
+      const readUint16 = (o: number) =>
+        littleEndian ? view.getUint16(o, true) : view.getUint16(o, false)
+      const readUint32 = (o: number) =>
+        littleEndian ? view.getUint32(o, true) : view.getUint32(o, false)
+
+      // IFD0 offset
+      const ifdOffset = tiffOffset + readUint32(tiffOffset + 4)
+      const numEntries = readUint16(ifdOffset)
+
+      for (let i = 0; i < numEntries; i++) {
+        const entryOffset = ifdOffset + 2 + i * 12
+        const tag = readUint16(entryOffset)
+        if (tag === 0x0112) {
+          // Orientation tag
+          return readUint16(entryOffset + 8)
+        }
+      }
+      break
+    }
+
+    // Skip other segments
+    if ((marker & 0xff00) !== 0xff00) break
+    offset += view.getUint16(offset)
+  }
+
+  return 1
+}
+
+/**
+ * Applies canvas rotation/flip transform based on EXIF orientation.
+ * The canvas must already be sized to the CORRECTED output dimensions.
+ * `imgW` and `imgH` are the RAW (pre-rotation) image dimensions at draw scale.
+ *
+ * For orientations 1-4: canvas = imgW × imgH
+ * For orientations 5-8: canvas = imgH × imgW (swapped)
+ */
+function applyExifTransform(
+  ctx: CanvasRenderingContext2D,
+  orientation: number,
+  imgW: number,
+  imgH: number
+): void {
+  switch (orientation) {
+    case 2:
+      // Flip horizontal
+      ctx.transform(-1, 0, 0, 1, imgW, 0)
+      break
+    case 3:
+      // Rotate 180°
+      ctx.transform(-1, 0, 0, -1, imgW, imgH)
+      break
+    case 4:
+      // Flip vertical
+      ctx.transform(1, 0, 0, -1, 0, imgH)
+      break
+    case 5:
+      // Transpose (rotate 90° CW + flip horizontal)
+      ctx.transform(0, 1, 1, 0, 0, 0)
+      break
+    case 6:
+      // Rotate 90° CW
+      ctx.transform(0, 1, -1, 0, imgH, 0)
+      break
+    case 7:
+      // Transverse (rotate 90° CCW + flip horizontal)
+      ctx.transform(0, -1, -1, 0, imgH, imgW)
+      break
+    case 8:
+      // Rotate 90° CCW
+      ctx.transform(0, -1, 1, 0, 0, imgW)
+      break
+    // case 1 and default: no transform needed
+  }
+}
+
+/**
+ * Compresses an image File to JPEG at max 1200px (longest side) and 0.82 quality.
+ * Handles EXIF orientation correction for mobile camera photos (orientations 1-8).
  * Uses browser Canvas API — no external dependencies.
  */
 export function compressImage(file: File): Promise<Blob> {
   return new Promise((resolve, reject) => {
-    const img = new Image()
-    const url = URL.createObjectURL(file)
+    // Read EXIF orientation from file bytes (JPEG only, first 64KB is enough)
+    const reader = new FileReader()
 
-    img.onload = () => {
-      URL.revokeObjectURL(url)
+    reader.onload = (readerEvent) => {
+      const buffer = readerEvent.target?.result as ArrayBuffer
+      const orientation = file.type === 'image/jpeg' ? readExifOrientation(buffer) : 1
 
-      const scale = Math.min(1, MAX_PX / Math.max(img.width, img.height))
-      const w = Math.round(img.width * scale)
-      const h = Math.round(img.height * scale)
+      const img = new Image()
+      const url = URL.createObjectURL(file)
 
-      const canvas = document.createElement('canvas')
-      canvas.width = w
-      canvas.height = h
-      const ctx = canvas.getContext('2d')!
-      ctx.drawImage(img, 0, 0, w, h)
+      img.onload = () => {
+        URL.revokeObjectURL(url)
 
-      canvas.toBlob(
-        (blob) =>
-          blob ? resolve(blob) : reject(new Error('Compression failed: null blob')),
-        'image/jpeg',
-        QUALITY
-      )
+        // Orientations 5-8 rotate 90°, swapping width/height in the output
+        const isRotated90 = orientation >= 5 && orientation <= 8
+
+        // Output dimensions after EXIF correction
+        const outputW = isRotated90 ? img.height : img.width
+        const outputH = isRotated90 ? img.width : img.height
+
+        // Scale so the longest output side fits within MAX_PX
+        const scale = Math.min(1, MAX_PX / Math.max(outputW, outputH))
+
+        // Canvas is sized to the corrected (post-rotation) output
+        const canvasW = Math.round(outputW * scale)
+        const canvasH = Math.round(outputH * scale)
+
+        // Raw image draw dimensions (pre-rotation, for drawImage call)
+        const drawW = Math.round(img.width * scale)
+        const drawH = Math.round(img.height * scale)
+
+        const canvas = document.createElement('canvas')
+        canvas.width = canvasW
+        canvas.height = canvasH
+
+        const ctx = canvas.getContext('2d')
+        if (!ctx) {
+          reject(
+            new Error(
+              'Impossibile creare il contesto canvas. Riprova o usa un altro browser.'
+            )
+          )
+          return
+        }
+
+        ctx.save()
+        applyExifTransform(ctx, orientation, drawW, drawH)
+        ctx.drawImage(img, 0, 0, drawW, drawH)
+        ctx.restore()
+
+        canvas.toBlob(
+          (blob) =>
+            blob
+              ? resolve(blob)
+              : reject(new Error('Compressione fallita. Prova con un altro file.')),
+          'image/jpeg',
+          QUALITY
+        )
+      }
+
+      img.onerror = () => {
+        URL.revokeObjectURL(url)
+        reject(
+          new Error(
+            'Impossibile leggere il file immagine. Verifica che sia un formato supportato (JPEG, PNG, WebP).'
+          )
+        )
+      }
+
+      img.src = url
     }
 
-    img.onerror = () => {
-      URL.revokeObjectURL(url)
-      reject(new Error('Failed to load image'))
+    reader.onerror = () => {
+      reject(new Error('Impossibile leggere il file. Riprova.'))
     }
 
-    img.src = url
+    // First 64KB is always enough to contain the EXIF APP1 segment at the start of a JPEG
+    reader.readAsArrayBuffer(file.slice(0, 65536))
   })
 }
