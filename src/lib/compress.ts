@@ -1,6 +1,23 @@
 const MAX_PX = 1200
 const QUALITY = 0.82
 
+const HEIC_TYPES = ['image/heic', 'image/heif', 'image/heic-sequence', 'image/heif-sequence']
+
+function isHeic(file: File): boolean {
+  if (HEIC_TYPES.includes(file.type)) return true
+  const name = file.name.toLowerCase()
+  return name.endsWith('.heic') || name.endsWith('.heif')
+}
+
+async function convertHeicToJpeg(file: File): Promise<File> {
+  const { default: heic2any } = await import('heic2any')
+  const blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.92 })
+  const result = Array.isArray(blob) ? blob[0] : blob
+  return new File([result], file.name.replace(/\.heic$/i, '.jpg').replace(/\.heif$/i, '.jpg'), {
+    type: 'image/jpeg',
+  })
+}
+
 /**
  * Reads the EXIF orientation tag from a JPEG file.
  * Returns a value 1-8, or 1 (no-op) if not found or not a JPEG.
@@ -114,7 +131,16 @@ function applyExifTransform(
  * Handles EXIF orientation correction for mobile camera photos (orientations 1-8).
  * Uses browser Canvas API — no external dependencies.
  */
-export function compressImage(file: File): Promise<Blob> {
+export async function compressImage(file: File): Promise<Blob> {
+  // Convert HEIC/HEIF to JPEG first (Chrome/Android can't decode HEIC natively)
+  if (isHeic(file)) {
+    try {
+      file = await convertHeicToJpeg(file)
+    } catch {
+      throw new Error('Impossibile convertire il file HEIC. Prova a scattare la foto in formato JPEG dalle impostazioni fotocamera.')
+    }
+  }
+
   return new Promise((resolve, reject) => {
     // Read EXIF orientation from file bytes (JPEG only, first 64KB is enough)
     const reader = new FileReader()
