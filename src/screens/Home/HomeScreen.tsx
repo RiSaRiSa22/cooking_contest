@@ -40,6 +40,9 @@ export function HomeScreen() {
       } else if (mode === 'join') {
         setDeepLinkCode(upperCode)
         setShowJoin(true)
+      } else if (mode === 'vote') {
+        setDeepLinkCode(upperCode)
+        setShowJoin(true)
       }
       setSearchParams({}, { replace: true })
     }
