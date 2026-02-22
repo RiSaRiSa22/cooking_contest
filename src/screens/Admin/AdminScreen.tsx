@@ -4,6 +4,9 @@ import { useSessionStore } from '../../store/sessionStore'
 import { useCompetitionStore } from '../../store/competitionStore'
 import { useCompetition } from '../../hooks/useCompetition'
 import { PhaseBanner } from '../../components/competition/PhaseBanner'
+import { ParticipantsTab } from './tabs/ParticipantsTab'
+import { RankingTab } from './tabs/RankingTab'
+import { SettingsTab } from './tabs/SettingsTab'
 
 const TABS = [
   { id: 'piatti', label: 'Piatti', emoji: '🍽️' },
@@ -78,27 +81,9 @@ export function AdminScreen() {
             </p>
           </div>
         )}
-        {activeTab === 'partecipanti' && (
-          <div className="px-4 py-6">
-            <p className="font-body text-ink-light text-sm text-center">
-              Tab Partecipanti — coming soon
-            </p>
-          </div>
-        )}
-        {activeTab === 'classifica' && (
-          <div className="px-4 py-6">
-            <p className="font-body text-ink-light text-sm text-center">
-              Tab Classifica — coming soon
-            </p>
-          </div>
-        )}
-        {activeTab === 'impostazioni' && (
-          <div className="px-4 py-6">
-            <p className="font-body text-ink-light text-sm text-center">
-              Tab Impostazioni — coming soon
-            </p>
-          </div>
-        )}
+        {activeTab === 'partecipanti' && <ParticipantsTab />}
+        {activeTab === 'classifica' && <RankingTab />}
+        {activeTab === 'impostazioni' && <SettingsTab />}
       </main>
 
       {/* Fixed bottom tab bar — 64px */}
