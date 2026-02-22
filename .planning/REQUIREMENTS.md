@@ -16,18 +16,18 @@
 
 ### Competition
 
-- [ ] **COMP-01**: Gara ha 3 fasi: preparation → voting → finished (transizioni unidirezionali)
-- [ ] **COMP-02**: Solo admin può cambiare fase (con conferma)
-- [ ] **COMP-03**: Admin può resettare tutti i voti (con conferma, azione irreversibile)
+- [x] **COMP-01**: Gara ha 3 fasi: preparation → voting → finished (transizioni unidirezionali)
+- [x] **COMP-02**: Solo admin può cambiare fase (con conferma)
+- [x] **COMP-03**: Admin può resettare tutti i voti (con conferma, azione irreversibile)
 
 ### Dishes
 
-- [ ] **DISH-01**: Admin può creare piatto con nome*, cuoco*, ingredienti, ricetta, storia, foto
-- [ ] **DISH-02**: Partecipante può aggiungere il proprio piatto (max 1) in fase preparation
-- [ ] **DISH-03**: Partecipante può modificare il proprio piatto fino a inizio votazioni
-- [ ] **DISH-04**: Admin può modificare/eliminare qualsiasi piatto (elimina anche voti associati)
-- [ ] **DISH-05**: Upload foto multiple con compressione client-side (800px max, 0.72 JPEG)
-- [ ] **DISH-06**: Partecipante può aggiungere foto extra al proprio piatto in fase voting
+- [x] **DISH-01**: Admin può creare piatto con nome*, cuoco*, ingredienti, ricetta, storia, foto
+- [x] **DISH-02**: Partecipante può aggiungere il proprio piatto (max 1) in fase preparation
+- [x] **DISH-03**: Partecipante può modificare il proprio piatto fino a inizio votazioni
+- [x] **DISH-04**: Admin può modificare/eliminare qualsiasi piatto (elimina anche voti associati)
+- [x] **DISH-05**: Upload foto multiple con compressione client-side (800px max, 0.72 JPEG)
+- [x] **DISH-06**: Partecipante può aggiungere foto extra al proprio piatto in fase voting
 
 ### Voting
 
@@ -45,10 +45,10 @@
 
 ### Admin Panel
 
-- [ ] **ADMN-01**: Tab Piatti — lista piatti con foto, cuoco, ingredienti, azioni modifica/elimina
-- [ ] **ADMN-02**: Tab Partecipanti — lista con avatar, soprannome, stato piatto/voto
-- [ ] **ADMN-03**: Tab Classifica — classifica con toggle reveal cuochi
-- [ ] **ADMN-04**: Tab Impostazioni — codice gara, fase, contatori, cambio fase, reset voti, link/QR
+- [x] **ADMN-01**: Tab Piatti — lista piatti con foto, cuoco, ingredienti, azioni modifica/elimina
+- [x] **ADMN-02**: Tab Partecipanti — lista con avatar, soprannome, stato piatto/voto
+- [x] **ADMN-03**: Tab Classifica — classifica con toggle reveal cuochi
+- [x] **ADMN-04**: Tab Impostazioni — codice gara, fase, contatori, cambio fase, reset voti, link/QR
 
 ### Voter Screen
 
@@ -101,15 +101,15 @@
 | AUTH-04 | Phase 1 | Complete |
 | AUTH-05 | Phase 1 | Complete |
 | AUTH-06 | Phase 1 | Removed |
-| COMP-01 | Phase 2 | Pending |
-| COMP-02 | Phase 2 | Pending |
-| COMP-03 | Phase 2 | Pending |
-| DISH-01 | Phase 2 | Pending |
-| DISH-02 | Phase 2 | Pending |
-| DISH-03 | Phase 2 | Pending |
-| DISH-04 | Phase 2 | Pending |
-| DISH-05 | Phase 2 | Pending |
-| DISH-06 | Phase 2 | Pending |
+| COMP-01 | Phase 2 | Complete |
+| COMP-02 | Phase 2 | Complete |
+| COMP-03 | Phase 2 | Complete |
+| DISH-01 | Phase 2 | Complete |
+| DISH-02 | Phase 2 | Complete |
+| DISH-03 | Phase 2 | Complete |
+| DISH-04 | Phase 2 | Complete |
+| DISH-05 | Phase 2 | Complete |
+| DISH-06 | Phase 2 | Complete |
 | VOTE-01 | Phase 3 | Pending |
 | VOTE-02 | Phase 3 | Pending |
 | VOTE-03 | Phase 3 | Pending |
@@ -118,10 +118,10 @@
 | SHAR-01 | Phase 3 | Pending |
 | SHAR-02 | Phase 3 | Pending |
 | SHAR-03 | Phase 1 | Complete |
-| ADMN-01 | Phase 2 | Pending |
-| ADMN-02 | Phase 2 | Pending |
-| ADMN-03 | Phase 2 | Pending |
-| ADMN-04 | Phase 2 | Pending |
+| ADMN-01 | Phase 2 | Complete |
+| ADMN-02 | Phase 2 | Complete |
+| ADMN-03 | Phase 2 | Complete |
+| ADMN-04 | Phase 2 | Complete |
 | VOTR-01 | Phase 3 | Pending |
 | VOTR-02 | Phase 3 | Pending |
 | VOTR-03 | Phase 3 | Pending |
@@ -138,4 +138,4 @@
 
 ---
 *Requirements defined: 2026-02-21*
-*Last updated: 2026-02-22 after Phase 1 completion*
+*Last updated: 2026-02-22 after Phase 2 completion*

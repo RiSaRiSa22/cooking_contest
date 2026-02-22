@@ -7,7 +7,7 @@ Tre fasi per costruire l'app completa: la Fase 1 getta le fondamenta tecniche e 
 ## Phases
 
 - [x] **Phase 1: Foundation + Auth** - Scaffold, schema Supabase, design system, home screen, flusso autenticazione
-- [ ] **Phase 2: Admin + Dishes** - Pannello admin completo, CRUD piatti con foto, gestione fasi gara
+- [x] **Phase 2: Admin + Dishes** - Pannello admin completo, CRUD piatti con foto, gestione fasi gara
 - [ ] **Phase 3: Voting + Voter Screen + Sharing** - Voto anonimo, schermata partecipante, condivisione e QR code
 
 ## Phase Details
@@ -43,9 +43,9 @@ Plans:
 **Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 02-01-PLAN.md — Data layer (competitionStore, useCompetition, compress, usePhotoUpload) + AdminScreen shell + PhaseBanner (Wave 1)
-- [ ] 02-02-PLAN.md — Dishes vertical slice: dish-write/dish-delete EFs + Storage migration + DishCard + PhotoGrid + AddDishModal + DishesTab (Wave 2)
-- [ ] 02-03-PLAN.md — competition-settings EF + ParticipantsTab + RankingTab + SettingsTab + ParticipantCard (Wave 2)
+- [x] 02-01-PLAN.md — Data layer (competitionStore, useCompetition, compress, usePhotoUpload) + AdminScreen shell + PhaseBanner (Wave 1)
+- [x] 02-02-PLAN.md — Dishes vertical slice: dish-write/dish-delete EFs + Storage migration + DishCard + PhotoGrid + AddDishModal + DishesTab (Wave 2)
+- [x] 02-03-PLAN.md — competition-settings EF + ParticipantsTab + RankingTab + SettingsTab + ParticipantCard (Wave 2)
 
 ### Phase 3: Voting + Voter Screen + Sharing
 **Goal**: I partecipanti possono votare in modo anonimo e vedere la rivelazione finale — il core value dell'app è realizzato
@@ -72,5 +72,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation + Auth | 4/4 | Complete | 2026-02-22 |
-| 2. Admin + Dishes | 0/3 | Not started | - |
+| 2. Admin + Dishes | 3/3 | Complete | 2026-02-22 |
 | 3. Voting + Voter Screen + Sharing | 0/3 | Not started | - |
