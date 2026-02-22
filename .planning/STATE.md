@@ -5,34 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Partecipanti votano piatti in modo anonimo e vedono la classifica finale con rivelazione dei cuochi
-**Current focus:** Phase 2 — Admin + Dishes
+**Current focus:** Phase 2 — Admin + Dishes (02-03 complete, awaiting human-verify checkpoint)
 
 ## Current Position
 
 Phase: 2 of 3 (Admin + Dishes)
-Plan: 1 of 3 in phase (02-01 complete)
-Status: In progress
-Last activity: 2026-02-22 — Completed 02-01-PLAN.md
+Plan: 3 of 3 in phase (02-03 complete, pending human verification)
+Status: Checkpoint — awaiting human-verify (all 4 admin tabs)
+Last activity: 2026-02-22 — Completed 02-03-PLAN.md (checkpoint pending)
 
-Progress: [█████░░░░░] 40% (02-01 complete: 5/7 total plans done — counting 01-04 as ~4 plans)
+Progress: [███████░░░] 65% (02-01, 02-03 complete; 02-02 parallel; 7/10 approx plans done)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: ~5min
-- Total execution time: ~26min
+- Total plans completed: 7 (including 02-03)
+- Average duration: ~10min
+- Total execution time: ~41min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-auth | 4/4 | ~24min | ~6min |
-| 02-admin-dishes | 1/3 | ~2min | ~2min |
+| 02-admin-dishes | 2/3 (02-01, 02-03) | ~17min | ~8min |
 
 **Recent Trend:**
-- Last 5 plans: 4min, 5min, 3min, 7min, 2min
-- Trend: stable/improving
+- Last 3 plans: 2min, 15min, N/A(02-02 parallel)
+- Trend: stable
 
 *Updated after each plan completion*
 
@@ -64,18 +64,24 @@ Recent decisions affecting current work:
 - [02-01]: Admin legge da dishes table direttamente (non dishes_public) — chef_name visibile in tutte le fasi
 - [02-01]: Tab navigation via useState — niente sub-routes per tab admin, stato ephemero
 - [02-01]: getPublicUrl è sincrono (no await) — deriva URL dal path senza network call
+- [02-03]: QR code via api.qrserver.com external API come <img> — evita dipendenza npm
+- [02-03]: Toast API usa solo show(string) — nessun variant type; wrapper inline in SettingsTab
+- [02-03]: RankingTab usa ordine alfabetico come placeholder — classifica per voti rimandata a Fase 3
+- [02-03]: competition-settings EF: fase advance unidirezionale enforced server-side
 
 ### Pending Todos
 
 - [02-02]: usePhotoUpload restituirà 403 finché la migration anon Storage INSERT policy non è aggiunta
+- [02-03]: competition-settings Edge Function da deployare con `npx supabase functions deploy competition-settings --no-verify-jwt` dopo `supabase login`
 
 ### Blockers/Concerns
 
 - [Phase 2]: RLS testing deve avvenire via SDK client con credenziali anon reali, NON da Supabase Studio (superuser bypassa RLS)
 - [Phase 2]: Foto upload bloccato finché 02-02 non aggiunge policy `anon_upload_dish_photos` su storage.objects
+- [02-03]: competition-settings EF non ancora deployata — necessita autenticazione CLI
 
 ## Session Continuity
 
-Last session: 2026-02-22T00:25:32Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-02-22T00:40:00Z
+Stopped at: 02-03 checkpoint:human-verify — all 4 admin tabs built, awaiting visual verification
 Resume file: None
