@@ -83,11 +83,9 @@ export function MyDishTab() {
       if (error) throw error
 
       // Aggiorna il voterStore con le nuove foto
-      const result = data as { dish: Record<string, unknown>; photos: unknown[] }
-      const updatedDish = {
-        ...currentDish,
-        photos: result.photos as typeof currentDish.photos,
-      }
+      type Photo = typeof currentDish.photos[number]
+      const result = data as { dish: Record<string, unknown>; photos: Photo[] }
+      const updatedDish = { ...currentDish, photos: result.photos }
       setDishes(dishes.map((d) => (d.id === myDishId ? updatedDish : d)))
 
       showToast('Foto aggiunta!')
