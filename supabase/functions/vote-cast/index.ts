@@ -11,6 +11,7 @@ const VoteCastSchema = z.object({
   competitionId: z.string().uuid(),
   participantId: z.string().uuid(),
   dishId: z.string().uuid(),
+  score: z.number().int().min(1).max(10),
 })
 
 Deno.serve(async (req) => {
@@ -37,7 +38,7 @@ Deno.serve(async (req) => {
       )
     }
 
-    const { competitionId, participantId, dishId } = parsed.data
+    const { competitionId, participantId, dishId, score } = parsed.data
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
@@ -116,12 +117,12 @@ Deno.serve(async (req) => {
       )
     }
 
-    // 5. Atomic upsert (1 vote per participant per competition)
+    // 5. Atomic upsert (1 score per participant per dish)
     const { data: vote, error: voteError } = await supabase
       .from('votes')
       .upsert(
-        { competition_id: competitionId, participant_id: participantId, dish_id: dishId },
-        { onConflict: 'competition_id,participant_id' }
+        { competition_id: competitionId, participant_id: participantId, dish_id: dishId, score },
+        { onConflict: 'competition_id,participant_id,dish_id' }
       )
       .select()
       .single()

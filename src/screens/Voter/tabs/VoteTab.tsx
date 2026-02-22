@@ -6,18 +6,53 @@ import { useVoterStore } from '../../../store/voterStore'
 import { useSessionStore } from '../../../store/sessionStore'
 import type { DishPublicWithPhotos } from '../../../store/voterStore'
 
+function ScoreSelector({
+  currentScore,
+  isSubmitting,
+  onSelect,
+}: {
+  currentScore: number | null
+  isSubmitting: boolean
+  onSelect: (score: number) => void
+}) {
+  return (
+    <div className="flex gap-1 flex-wrap justify-center">
+      {Array.from({ length: 10 }, (_, i) => i + 1).map((score) => {
+        const isSelected = currentScore === score
+        return (
+          <button
+            key={score}
+            onClick={() => onSelect(score)}
+            disabled={isSubmitting}
+            className="w-9 h-9 rounded-lg font-body text-sm font-semibold transition-all duration-150 disabled:opacity-50 cursor-pointer"
+            style={{
+              background: isSelected ? 'var(--color-ember)' : 'var(--color-parchment-dark)',
+              color: isSelected ? '#ffffff' : 'var(--color-ink)',
+              border: isSelected
+                ? '2px solid var(--color-ember)'
+                : '1px solid var(--color-parchment-deep)',
+            }}
+          >
+            {score}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 function DishVoteCard({
   dish,
   isOwn,
-  isVoted,
-  isVoting,
-  onVote,
+  currentScore,
+  isSubmitting,
+  onRate,
 }: {
   dish: DishPublicWithPhotos
   isOwn: boolean
-  isVoted: boolean
-  isVoting: boolean
-  onVote: (dishId: string) => void
+  currentScore: number | null
+  isSubmitting: boolean
+  onRate: (dishId: string, score: number) => void
 }) {
   const [expanded, setExpanded] = useState(false)
 
@@ -33,10 +68,10 @@ function DishVoteCard({
       className="rounded-xl shadow-sm overflow-hidden transition-all duration-200 relative"
       style={{
         background: '#ffffff',
-        border: isVoted
+        border: currentScore !== null
           ? '2px solid var(--color-ember)'
           : '1px solid var(--color-parchment-deep)',
-        boxShadow: isVoted ? '0 4px 16px rgba(196,75,27,0.18)' : undefined,
+        boxShadow: currentScore !== null ? '0 4px 16px rgba(196,75,27,0.18)' : undefined,
         opacity: isOwn ? 0.85 : 1,
       }}
     >
@@ -79,9 +114,12 @@ function DishVoteCard({
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            {isVoted && (
-              <span className="text-lg" title="Hai votato questo piatto">
-                ✅
+            {currentScore !== null && (
+              <span
+                className="font-body text-sm font-bold px-2 py-0.5 rounded-md"
+                style={{ background: 'var(--color-ember)', color: '#ffffff' }}
+              >
+                {currentScore}/10
               </span>
             )}
             {!isOwn && (
@@ -127,17 +165,20 @@ function DishVoteCard({
             </div>
           )}
 
-          <button
-            onClick={() => onVote(dish.id as string)}
-            disabled={isVoting}
-            className="w-full py-2.5 rounded-lg font-body text-sm font-semibold transition-opacity duration-150 disabled:opacity-50 cursor-pointer"
-            style={{
-              background: isVoted ? 'var(--color-sage)' : 'var(--color-ember)',
-              color: '#ffffff',
-            }}
-          >
-            {isVoting ? 'Votando...' : isVoted ? '✅ Cambia voto' : '🗳️ Vota questo piatto'}
-          </button>
+          {/* Score selector */}
+          <div>
+            <p
+              className="font-body text-[0.7rem] uppercase tracking-wider font-semibold mb-2 text-center"
+              style={{ color: 'var(--color-ink-light)' }}
+            >
+              {currentScore !== null ? 'Il tuo voto (clicca per cambiare)' : 'Dai un voto da 1 a 10'}
+            </p>
+            <ScoreSelector
+              currentScore={currentScore}
+              isSubmitting={isSubmitting}
+              onSelect={(score) => onRate(dish.id as string, score)}
+            />
+          </div>
         </div>
       )}
     </div>
@@ -150,9 +191,9 @@ export function VoteTab() {
 
   const competition = useVoterStore((s) => s.competition)
   const dishes = useVoterStore((s) => s.dishes)
-  const myVotedDishId = useVoterStore((s) => s.myVotedDishId)
+  const myRatings = useVoterStore((s) => s.myRatings)
   const myDishId = useVoterStore((s) => s.myDishId)
-  const setMyVotedDishId = useVoterStore((s) => s.setMyVotedDishId)
+  const setMyRating = useVoterStore((s) => s.setMyRating)
 
   const { show: showToast } = useToast()
 
@@ -165,7 +206,11 @@ export function VoteTab() {
     (a.name ?? '').localeCompare(b.name ?? '', 'it')
   )
 
-  async function handleVote(dishId: string) {
+  // Count votable dishes (not own) and rated dishes
+  const votableDishes = sortedDishes.filter((d) => d.id !== myDishId)
+  const ratedCount = votableDishes.filter((d) => myRatings.has(d.id as string)).length
+
+  async function handleRate(dishId: string, score: number) {
     if (!session || !competition) return
     if (isVoting) return
 
@@ -176,14 +221,13 @@ export function VoteTab() {
           competitionId: competition.id,
           participantId: session.participantId,
           dishId,
+          score,
         },
       })
 
       if (error) {
-        // Try to extract user-facing message from response body
         let message = 'Errore durante il voto'
         try {
-          // FunctionsHttpError wraps the body
           const ctx = (error as { context?: { responseBody?: string } }).context
           if (ctx?.responseBody) {
             const parsed = JSON.parse(ctx.responseBody) as { error?: string }
@@ -197,7 +241,7 @@ export function VoteTab() {
       }
 
       if (data?.vote) {
-        setMyVotedDishId(data.vote.dish_id)
+        setMyRating(dishId, data.vote.score)
       }
     } catch (err) {
       showToast(err instanceof Error ? err.message : 'Errore imprevisto')
@@ -227,23 +271,19 @@ export function VoteTab() {
       </div>
     )
   } else if (phase === 'voting') {
-    const votedDish = myVotedDishId
-      ? sortedDishes.find((d) => d.id === myVotedDishId)
-      : null
-
-    statusBar = votedDish ? (
+    statusBar = (
       <div
         className="mx-4 mt-4 px-4 py-3 rounded-xl font-body text-sm text-center"
-        style={{ background: 'rgba(100,180,100,0.2)', color: 'var(--color-ink)' }}
+        style={{
+          background: ratedCount === votableDishes.length && votableDishes.length > 0
+            ? 'rgba(100,180,100,0.2)'
+            : 'rgba(201,153,31,0.15)',
+          color: 'var(--color-ink)',
+        }}
       >
-        Hai votato: <strong>{votedDish.name}</strong> ✅
-      </div>
-    ) : (
-      <div
-        className="mx-4 mt-4 px-4 py-3 rounded-xl font-body text-sm text-center"
-        style={{ background: 'rgba(201,153,31,0.15)', color: 'var(--color-ink)' }}
-      >
-        🗳️ Scegli il piatto da votare
+        {ratedCount === votableDishes.length && votableDishes.length > 0
+          ? `Hai votato tutti i piatti! (${ratedCount}/${votableDishes.length}) ✅`
+          : `🗳️ Hai votato ${ratedCount}/${votableDishes.length} piatti`}
       </div>
     )
   }
@@ -271,9 +311,9 @@ export function VoteTab() {
                   key={dish.id as string}
                   dish={dish}
                   isOwn={myDishId !== null && dish.id === myDishId}
-                  isVoted={dish.id === myVotedDishId}
-                  isVoting={isVoting}
-                  onVote={handleVote}
+                  currentScore={myRatings.get(dish.id as string) ?? null}
+                  isSubmitting={isVoting}
+                  onRate={handleRate}
                 />
               ))}
             </div>

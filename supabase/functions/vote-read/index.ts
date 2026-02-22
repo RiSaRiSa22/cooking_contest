@@ -66,14 +66,13 @@ Deno.serve(async (req) => {
     }
 
     // Three parallel queries
-    const [myVoteRes, myDishRes, allVotesRes] = await Promise.all([
-      // 1. Current vote by this participant
+    const [myRatingsRes, myDishRes, allVotesRes] = await Promise.all([
+      // 1. All ratings by this participant
       supabase
         .from('votes')
-        .select('dish_id')
+        .select('dish_id, score')
         .eq('competition_id', competitionId)
-        .eq('participant_id', participantId)
-        .maybeSingle(),
+        .eq('participant_id', participantId),
 
       // 2. Participant's own dish
       supabase
@@ -86,25 +85,32 @@ Deno.serve(async (req) => {
       // 3. All votes for this competition (aggregate in JS)
       supabase
         .from('votes')
-        .select('dish_id')
+        .select('dish_id, score')
         .eq('competition_id', competitionId),
     ])
 
-    const myVotedDishId = myVoteRes.data?.dish_id ?? null
+    const myRatings = (myRatingsRes.data ?? []).map((r) => ({
+      dish_id: r.dish_id,
+      score: r.score,
+    }))
     const myDishId = myDishRes.data?.id ?? null
 
-    // Aggregate vote counts: dish_id → count
-    const voteCountMap = new Map<string, number>()
+    // Aggregate dish scores: dish_id → { total, count }
+    const scoreMap = new Map<string, { total: number; count: number }>()
     for (const row of allVotesRes.data ?? []) {
-      voteCountMap.set(row.dish_id, (voteCountMap.get(row.dish_id) ?? 0) + 1)
+      const entry = scoreMap.get(row.dish_id) ?? { total: 0, count: 0 }
+      entry.total += row.score
+      entry.count += 1
+      scoreMap.set(row.dish_id, entry)
     }
-    const voteCounts = Array.from(voteCountMap.entries()).map(([dish_id, count]) => ({
+    const dishScores = Array.from(scoreMap.entries()).map(([dish_id, { total, count }]) => ({
       dish_id,
+      avg: Math.round((total / count) * 10) / 10,
       count,
     }))
 
     return new Response(
-      JSON.stringify({ myVotedDishId, myDishId, voteCounts }),
+      JSON.stringify({ myRatings, myDishId, dishScores }),
       { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
     )
   } catch (err) {

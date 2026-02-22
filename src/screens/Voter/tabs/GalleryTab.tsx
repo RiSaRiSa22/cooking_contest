@@ -6,7 +6,6 @@ export function GalleryTab() {
   const dishes = useVoterStore((s) => s.dishes)
   const competition = useVoterStore((s) => s.competition)
   const myDishId = useVoterStore((s) => s.myDishId)
-  const myVotedDishId = useVoterStore((s) => s.myVotedDishId)
 
   const [selectedDish, setSelectedDish] = useState<DishPublicWithPhotos | null>(null)
 
@@ -86,7 +85,6 @@ export function GalleryTab() {
         onClose={() => setSelectedDish(null)}
         phase={phase}
         myDishId={myDishId}
-        myVotedDishId={myVotedDishId}
       />
     </>
   )

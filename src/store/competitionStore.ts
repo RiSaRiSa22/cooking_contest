@@ -8,17 +8,22 @@ type Participant = Database['public']['Tables']['participants']['Row']
 
 export type DishWithPhotos = Dish & { photos: Photo[] }
 
+export interface DishScore {
+  avg: number
+  count: number
+}
+
 interface CompetitionStore {
   competition: Competition | null
   dishes: DishWithPhotos[]
   participants: Participant[]
-  voteCounts: Map<string, number> // dish_id → count
+  dishScores: Map<string, DishScore> // dish_id → { avg, count }
   isLoading: boolean
   error: string | null
   setCompetition: (c: Competition) => void
   setDishes: (dishes: DishWithPhotos[]) => void
   setParticipants: (participants: Participant[]) => void
-  setVoteCounts: (counts: Map<string, number>) => void
+  setDishScores: (scores: Map<string, DishScore>) => void
   updatePhase: (phase: string) => void
   addDish: (dish: DishWithPhotos) => void
   updateDish: (dish: DishWithPhotos) => void
@@ -33,7 +38,7 @@ const initialState = {
   competition: null,
   dishes: [],
   participants: [],
-  voteCounts: new Map<string, number>(),
+  dishScores: new Map<string, DishScore>(),
   isLoading: false,
   error: null,
 }
@@ -44,7 +49,7 @@ export const useCompetitionStore = create<CompetitionStore>()((set) => ({
   setCompetition: (competition) => set({ competition }),
   setDishes: (dishes) => set({ dishes }),
   setParticipants: (participants) => set({ participants }),
-  setVoteCounts: (voteCounts) => set({ voteCounts }),
+  setDishScores: (dishScores) => set({ dishScores }),
 
   updatePhase: (phase) =>
     set((s) => ({

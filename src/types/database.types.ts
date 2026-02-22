@@ -203,6 +203,7 @@ export type Database = {
           dish_id: string
           id: string
           participant_id: string
+          score: number
         }
         Insert: {
           competition_id: string
@@ -210,6 +211,7 @@ export type Database = {
           dish_id: string
           id?: string
           participant_id: string
+          score: number
         }
         Update: {
           competition_id?: string
@@ -217,6 +219,7 @@ export type Database = {
           dish_id?: string
           id?: string
           participant_id?: string
+          score?: number
         }
         Relationships: [
           {

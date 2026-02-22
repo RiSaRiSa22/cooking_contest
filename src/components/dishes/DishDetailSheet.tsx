@@ -7,8 +7,6 @@ interface DishDetailSheetProps {
   onClose: () => void
   phase: string
   myDishId?: string | null
-  myVotedDishId?: string | null
-  onVote?: (dishId: string) => void
 }
 
 type SectionKey = 'ingredienti' | 'ricetta' | 'storia'
@@ -24,8 +22,6 @@ export function DishDetailSheet({
   onClose,
   phase,
   myDishId,
-  myVotedDishId,
-  onVote,
 }: DishDetailSheetProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
 
@@ -35,9 +31,6 @@ export function DishDetailSheet({
   const extraPhotos = dish.photos.slice(1)
   const isMysteriousChef = phase === 'preparation' || phase === 'voting'
   const isOwnDish = myDishId != null && dish.id === myDishId
-  const hasVoted = myVotedDishId != null
-  const isVoted = myVotedDishId === dish.id
-  const canVote = phase === 'voting' && !isOwnDish && onVote != null
 
   function toggleSection(key: string) {
     setExpandedSections((prev) => {
@@ -194,23 +187,6 @@ export function DishDetailSheet({
                 ))}
               </div>
             </div>
-          )}
-
-          {/* Pulsante vota */}
-          {canVote && (
-            <button
-              onClick={() => onVote!(dish.id!)}
-              disabled={hasVoted && !isVoted}
-              className="w-full mt-5 py-3.5 rounded-full font-body font-semibold text-white cursor-pointer transition-opacity duration-150"
-              style={{
-                background: isVoted
-                  ? 'var(--color-sage)'
-                  : 'var(--color-ember)',
-                opacity: hasVoted && !isVoted ? 0.5 : 1,
-              }}
-            >
-              {isVoted ? '✓ Hai votato questo piatto' : '🗳️ Vota questo piatto'}
-            </button>
           )}
         </div>
       </div>

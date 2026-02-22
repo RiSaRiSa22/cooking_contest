@@ -7,25 +7,26 @@ type Photo = Database['public']['Tables']['photos']['Row']
 // DishPublic has nullable fields (it's a view) — we filter out rows with null id after fetch
 export type DishPublicWithPhotos = DishPublic & { photos: Photo[] }
 
-export interface VoteCount {
-  dish_id: string
+export interface DishScore {
+  avg: number
   count: number
 }
 
 interface VoterStore {
   competition: Competition | null
   dishes: DishPublicWithPhotos[]
-  myVotedDishId: string | null
+  myRatings: Map<string, number> // dish_id → score (1-10)
   myDishId: string | null
-  voteCounts: Map<string, number>
+  dishScores: Map<string, DishScore> // dish_id → { avg, count }
   isLoading: boolean
   error: string | null
 
   setCompetition: (c: Competition) => void
   setDishes: (dishes: DishPublicWithPhotos[]) => void
-  setMyVotedDishId: (id: string | null) => void
+  setMyRatings: (ratings: Array<{ dish_id: string; score: number }>) => void
+  setMyRating: (dishId: string, score: number) => void
   setMyDishId: (id: string | null) => void
-  setVoteCounts: (counts: VoteCount[]) => void
+  setDishScores: (scores: Array<{ dish_id: string; avg: number; count: number }>) => void
   updatePhase: (phase: string) => void
   setLoading: (b: boolean) => void
   setError: (e: string | null) => void
@@ -35,9 +36,9 @@ interface VoterStore {
 const initialState = {
   competition: null,
   dishes: [],
-  myVotedDishId: null,
+  myRatings: new Map<string, number>(),
   myDishId: null,
-  voteCounts: new Map<string, number>(),
+  dishScores: new Map<string, DishScore>(),
   isLoading: false,
   error: null,
 }
@@ -47,15 +48,30 @@ export const useVoterStore = create<VoterStore>()((set) => ({
 
   setCompetition: (competition) => set({ competition }),
   setDishes: (dishes) => set({ dishes }),
-  setMyVotedDishId: (myVotedDishId) => set({ myVotedDishId }),
+
+  setMyRatings: (ratings) => {
+    const map = new Map<string, number>()
+    for (const { dish_id, score } of ratings) {
+      map.set(dish_id, score)
+    }
+    set({ myRatings: map })
+  },
+
+  setMyRating: (dishId, score) =>
+    set((s) => {
+      const map = new Map(s.myRatings)
+      map.set(dishId, score)
+      return { myRatings: map }
+    }),
+
   setMyDishId: (myDishId) => set({ myDishId }),
 
-  setVoteCounts: (counts) => {
-    const map = new Map<string, number>()
-    for (const { dish_id, count } of counts) {
-      map.set(dish_id, count)
+  setDishScores: (scores) => {
+    const map = new Map<string, DishScore>()
+    for (const { dish_id, avg, count } of scores) {
+      map.set(dish_id, { avg, count })
     }
-    set({ voteCounts: map })
+    set({ dishScores: map })
   },
 
   updatePhase: (phase) =>
@@ -67,5 +83,5 @@ export const useVoterStore = create<VoterStore>()((set) => ({
   setError: (error) => set({ error }),
 
   // CRITICAL: reset to initial state on unmount to prevent stale data flash
-  reset: () => set({ ...initialState, voteCounts: new Map() }),
+  reset: () => set({ ...initialState, myRatings: new Map(), dishScores: new Map() }),
 }))

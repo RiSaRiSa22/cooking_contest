@@ -4,7 +4,7 @@ import { useCompetitionStore } from '../store/competitionStore'
 import type { DishWithPhotos } from '../store/competitionStore'
 
 export function useCompetition(competitionId: string, participantId?: string) {
-  const { setCompetition, setDishes, setParticipants, setVoteCounts, setLoading, setError, reset } =
+  const { setCompetition, setDishes, setParticipants, setDishScores, setLoading, setError, reset } =
     useCompetitionStore()
 
   useEffect(() => {
@@ -36,21 +36,21 @@ export function useCompetition(competitionId: string, participantId?: string) {
       setDishes((dishesRes.data ?? []) as DishWithPhotos[])
       setParticipants(participantsRes.data ?? [])
 
-      // Load vote counts via vote-read EF (requires participantId)
+      // Load dish scores via vote-read EF (requires participantId)
       if (participantId) {
         try {
           const { data } = await supabase.functions.invoke('vote-read', {
             body: { competitionId, participantId },
           })
-          if (data?.voteCounts) {
-            const map = new Map<string, number>()
-            for (const { dish_id, count } of data.voteCounts as Array<{ dish_id: string; count: number }>) {
-              map.set(dish_id, count)
+          if (data?.dishScores) {
+            const map = new Map<string, { avg: number; count: number }>()
+            for (const { dish_id, avg, count } of data.dishScores as Array<{ dish_id: string; avg: number; count: number }>) {
+              map.set(dish_id, { avg, count })
             }
-            setVoteCounts(map)
+            setDishScores(map)
           }
         } catch {
-          // Non-fatal: vote counts unavailable, default to empty Map
+          // Non-fatal: dish scores unavailable, default to empty Map
         }
       }
 

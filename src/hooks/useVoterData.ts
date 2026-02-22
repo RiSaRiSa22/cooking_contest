@@ -9,9 +9,9 @@ export function useVoterData(competitionId: string, participantId: string) {
   const {
     setCompetition,
     setDishes,
-    setMyVotedDishId,
+    setMyRatings,
     setMyDishId,
-    setVoteCounts,
+    setDishScores,
     setLoading,
     setError,
     reset,
@@ -91,9 +91,9 @@ export function useVoterData(competitionId: string, participantId: string) {
       )
 
       if (!voteReadError && voteReadData) {
-        setMyVotedDishId(voteReadData.myVotedDishId ?? null)
+        setMyRatings(voteReadData.myRatings ?? [])
         setMyDishId(voteReadData.myDishId ?? null)
-        setVoteCounts(voteReadData.voteCounts ?? [])
+        setDishScores(voteReadData.dishScores ?? [])
       }
 
       setLoading(false)

@@ -46,7 +46,7 @@ export function SettingsTab() {
   const competition = useCompetitionStore((s) => s.competition)
   const dishes = useCompetitionStore((s) => s.dishes)
   const participants = useCompetitionStore((s) => s.participants)
-  const voteCounts = useCompetitionStore((s) => s.voteCounts)
+  const dishScores = useCompetitionStore((s) => s.dishScores)
   const updatePhase = useCompetitionStore((s) => s.updatePhase)
 
   const { showToast } = useAppToast()
@@ -55,8 +55,8 @@ export function SettingsTab() {
 
   const phase = competition?.phase ?? 'preparation'
 
-  // Total votes from real vote counts
-  const totalVotes = Array.from(voteCounts.values()).reduce((sum, c) => sum + c, 0)
+  // Total ratings from dish scores
+  const totalVotes = Array.from(dishScores.values()).reduce((sum, s) => sum + s.count, 0)
 
   // Adaptive share URLs: join for preparation/finished, vote for voting
   const joinUrl = `${window.location.origin}${window.location.pathname}#/?code=${competition?.code ?? ''}&mode=join`
@@ -212,7 +212,7 @@ export function SettingsTab() {
               {totalVotes}
             </span>
             <span className="font-body text-xs" style={{ color: 'var(--color-ink-light)' }}>
-              Voti
+              Valutazioni
             </span>
           </div>
         </div>

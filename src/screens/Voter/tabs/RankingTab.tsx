@@ -5,10 +5,9 @@ const MEDALS = ['🥇', '🥈', '🥉']
 export function RankingTab() {
   const competition = useVoterStore((s) => s.competition)
   const dishes = useVoterStore((s) => s.dishes)
-  const voteCounts = useVoterStore((s) => s.voteCounts)
+  const dishScores = useVoterStore((s) => s.dishScores)
 
   // Guard: this tab should only be reachable in 'finished' phase
-  // (VoterScreen also filters it from visibleTabs)
   if (competition?.phase !== 'finished') {
     return (
       <div
@@ -23,13 +22,11 @@ export function RankingTab() {
     )
   }
 
-  const totalVotes = Array.from(voteCounts.values()).reduce((sum, c) => sum + c, 0)
-
-  // Sort by vote count DESC, ties broken alphabetically
+  // Sort by average score DESC, ties broken alphabetically
   const sorted = [...dishes].sort((a, b) => {
-    const countA = voteCounts.get(a.id ?? '') ?? 0
-    const countB = voteCounts.get(b.id ?? '') ?? 0
-    if (countB !== countA) return countB - countA
+    const avgA = dishScores.get(a.id ?? '')?.avg ?? 0
+    const avgB = dishScores.get(b.id ?? '')?.avg ?? 0
+    if (avgB !== avgA) return avgB - avgA
     return (a.name ?? '').localeCompare(b.name ?? '')
   })
 
@@ -52,8 +49,9 @@ export function RankingTab() {
       <div className="space-y-3">
         {sorted.map((dish, idx) => {
           const dishId = dish.id ?? ''
-          const count = voteCounts.get(dishId) ?? 0
-          const percentage = totalVotes > 0 ? (count / totalVotes) * 100 : 0
+          const score = dishScores.get(dishId)
+          const avg = score?.avg ?? 0
+          const count = score?.count ?? 0
 
           return (
             <div
@@ -74,13 +72,12 @@ export function RankingTab() {
                 >
                   {dish.name}
                 </p>
-                {/* Chef name — revealed automatically by dishes_public view in finished phase */}
                 {dish.chef_name && (
                   <p className="font-body text-xs mb-1" style={{ color: 'var(--color-ink-light)' }}>
                     {dish.chef_name}
                   </p>
                 )}
-                {/* Progress bar */}
+                {/* Progress bar (scale 0-10) */}
                 <div
                   className="h-1.5 rounded-full overflow-hidden"
                   style={{ background: 'var(--color-parchment-deep)' }}
@@ -88,21 +85,21 @@ export function RankingTab() {
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
-                      width: `${percentage}%`,
+                      width: `${(avg / 10) * 100}%`,
                       background: 'var(--color-ember)',
                     }}
                   />
                 </div>
               </div>
 
-              {/* Vote count + percentage */}
+              {/* Average score + count */}
               <span
                 className="flex-shrink-0 font-body text-xs text-right"
                 style={{ color: 'var(--color-ink-light)' }}
               >
-                {count} vot{count === 1 ? 'o' : 'i'}
+                <strong style={{ color: 'var(--color-ink)', fontSize: '0.85rem' }}>{avg.toFixed(1)}</strong>/10
                 <br />
-                ({percentage.toFixed(0)}%)
+                {count} vot{count === 1 ? 'o' : 'i'}
               </span>
             </div>
           )
