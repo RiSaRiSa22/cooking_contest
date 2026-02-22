@@ -24,6 +24,7 @@ export type Database = {
           max_participants: number | null
           name: string
           phase: string
+          ranking_mode: string
         }
         Insert: {
           admin_pwd_hash: string
@@ -34,6 +35,7 @@ export type Database = {
           max_participants?: number | null
           name: string
           phase?: string
+          ranking_mode?: string
         }
         Update: {
           admin_pwd_hash?: string
@@ -44,6 +46,7 @@ export type Database = {
           max_participants?: number | null
           name?: string
           phase?: string
+          ranking_mode?: string
         }
         Relationships: []
       }

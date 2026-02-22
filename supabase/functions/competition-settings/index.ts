@@ -18,6 +18,12 @@ const SettingsSchema = z.discriminatedUnion('action', [
     competitionId: z.string().uuid(),
     participantId: z.string().uuid(),
   }),
+  z.object({
+    action: z.literal('set_ranking_mode'),
+    competitionId: z.string().uuid(),
+    participantId: z.string().uuid(),
+    rankingMode: z.enum(['simple', 'bayesian']),
+  }),
 ])
 
 const PHASE_ORDER: Record<string, string> = {
@@ -143,6 +149,28 @@ Deno.serve(async (req) => {
 
       return new Response(
         JSON.stringify({ success: true, deletedCount: count ?? 0 }),
+        { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    if (action === 'set_ranking_mode') {
+      const rankingMode = (parsed.data as { rankingMode: string }).rankingMode
+
+      const { error: updateError } = await supabase
+        .from('competitions')
+        .update({ ranking_mode: rankingMode })
+        .eq('id', competitionId)
+
+      if (updateError) {
+        console.error('Ranking mode update error:', updateError)
+        return new Response(
+          JSON.stringify({ error: 'Errore durante l\'aggiornamento della classifica' }),
+          { status: 500, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
+        )
+      }
+
+      return new Response(
+        JSON.stringify({ ranking_mode: rankingMode }),
         { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
       )
     }

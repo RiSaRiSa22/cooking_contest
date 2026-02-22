@@ -1,4 +1,5 @@
 import { useVoterStore } from '../../../store/voterStore'
+import { computeRankingScores, type RankingMode } from '../../../lib/ranking'
 
 const MEDALS = ['🥇', '🥈', '🥉']
 
@@ -22,11 +23,14 @@ export function RankingTab() {
     )
   }
 
-  // Sort by average score DESC, ties broken alphabetically
+  const mode = (competition.ranking_mode ?? 'bayesian') as RankingMode
+  const rankingScores = computeRankingScores(dishScores, mode)
+
+  // Sort by computed score DESC, ties broken alphabetically
   const sorted = [...dishes].sort((a, b) => {
-    const avgA = dishScores.get(a.id ?? '')?.avg ?? 0
-    const avgB = dishScores.get(b.id ?? '')?.avg ?? 0
-    if (avgB !== avgA) return avgB - avgA
+    const scoreA = rankingScores.get(a.id ?? '') ?? 0
+    const scoreB = rankingScores.get(b.id ?? '') ?? 0
+    if (scoreB !== scoreA) return scoreB - scoreA
     return (a.name ?? '').localeCompare(b.name ?? '')
   })
 
@@ -49,9 +53,9 @@ export function RankingTab() {
       <div className="space-y-3">
         {sorted.map((dish, idx) => {
           const dishId = dish.id ?? ''
-          const score = dishScores.get(dishId)
-          const avg = score?.avg ?? 0
-          const count = score?.count ?? 0
+          const computedScore = rankingScores.get(dishId) ?? 0
+          const rawScore = dishScores.get(dishId)
+          const count = rawScore?.count ?? 0
 
           return (
             <div
@@ -85,19 +89,21 @@ export function RankingTab() {
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
-                      width: `${(avg / 10) * 100}%`,
+                      width: `${(computedScore / 10) * 100}%`,
                       background: 'var(--color-ember)',
                     }}
                   />
                 </div>
               </div>
 
-              {/* Average score + count */}
+              {/* Score + count */}
               <span
                 className="flex-shrink-0 font-body text-xs text-right"
                 style={{ color: 'var(--color-ink-light)' }}
               >
-                <strong style={{ color: 'var(--color-ink)', fontSize: '0.85rem' }}>{avg.toFixed(1)}</strong>/10
+                <strong style={{ color: 'var(--color-ink)', fontSize: '0.85rem' }}>
+                  {computedScore.toFixed(1)}
+                </strong>/10
                 <br />
                 {count} vot{count === 1 ? 'o' : 'i'}
               </span>

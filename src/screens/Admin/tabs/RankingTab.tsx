@@ -1,24 +1,73 @@
 import { useState } from 'react'
+import { useParams } from 'react-router'
 import { useCompetitionStore } from '../../../store/competitionStore'
+import { useSessionStore } from '../../../store/sessionStore'
+import { useToast } from '../../../components/ui/Toast'
+import { supabase } from '../../../lib/supabase'
+import { computeRankingScores, type RankingMode } from '../../../lib/ranking'
 
 const MEDALS = ['🥇', '🥈', '🥉']
 
+const MODE_LABELS: Record<RankingMode, string> = {
+  simple: 'Media semplice',
+  bayesian: 'Media pesata',
+}
+
 export function RankingTab() {
+  const { code } = useParams<{ code: string }>()
+  const session = useSessionStore((s) => s.getSession(code!))
+
   const competition = useCompetitionStore((s) => s.competition)
   const dishes = useCompetitionStore((s) => s.dishes)
   const dishScores = useCompetitionStore((s) => s.dishScores)
+  const setCompetition = useCompetitionStore((s) => s.setCompetition)
   const [revealChefs, setRevealChefs] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+
+  const { show: showToast } = useToast()
 
   const phase = competition?.phase ?? 'preparation'
   const showRanking = phase === 'voting' || phase === 'finished'
+  const officialMode = (competition?.ranking_mode ?? 'bayesian') as RankingMode
 
-  // Sort by average score DESC, ties broken alphabetically
+  // View toggle — defaults to official mode
+  const [viewMode, setViewMode] = useState<RankingMode>(officialMode)
+
+  // Compute scores for current view
+  const rankingScores = computeRankingScores(dishScores, viewMode)
+
+  // Sort by computed score DESC, ties broken alphabetically
   const sorted = [...dishes].sort((a, b) => {
-    const avgA = dishScores.get(a.id)?.avg ?? 0
-    const avgB = dishScores.get(b.id)?.avg ?? 0
-    if (avgB !== avgA) return avgB - avgA
+    const scoreA = rankingScores.get(a.id) ?? 0
+    const scoreB = rankingScores.get(b.id) ?? 0
+    if (scoreB !== scoreA) return scoreB - scoreA
     return a.name.localeCompare(b.name)
   })
+
+  async function handleSetOfficialMode(mode: RankingMode) {
+    if (!competition || !session?.participantId || isSaving) return
+
+    setIsSaving(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('competition-settings', {
+        body: {
+          action: 'set_ranking_mode',
+          competitionId: competition.id,
+          participantId: session.participantId,
+          rankingMode: mode,
+        },
+      })
+
+      if (error) throw error
+
+      setCompetition({ ...competition, ranking_mode: data.ranking_mode })
+      showToast(`Classifica ufficiale: ${MODE_LABELS[mode]}`)
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Errore')
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   return (
     <div className="px-4 py-6">
@@ -57,6 +106,44 @@ export function RankingTab() {
         )}
       </div>
 
+      {/* Mode toggle pills */}
+      {showRanking && dishes.length > 0 && (
+        <div className="mb-4 space-y-3">
+          <div className="flex gap-1 bg-parchment-dark rounded-xl p-1">
+            {(['simple', 'bayesian'] as RankingMode[]).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                className="flex-1 py-2 px-3 rounded-lg font-body text-xs font-semibold transition-all duration-200 cursor-pointer"
+                style={{
+                  background: viewMode === mode ? '#ffffff' : 'transparent',
+                  color: viewMode === mode ? 'var(--color-ink)' : 'var(--color-ink-light)',
+                  boxShadow: viewMode === mode ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                }}
+              >
+                {MODE_LABELS[mode]}
+                {officialMode === mode && ' ★'}
+              </button>
+            ))}
+          </div>
+
+          {/* Set as official button */}
+          {viewMode !== officialMode && (
+            <button
+              onClick={() => handleSetOfficialMode(viewMode)}
+              disabled={isSaving}
+              className="w-full py-2 rounded-lg font-body text-xs font-semibold cursor-pointer transition-opacity duration-150 disabled:opacity-50"
+              style={{
+                background: 'var(--color-ember)',
+                color: '#ffffff',
+              }}
+            >
+              {isSaving ? 'Salvando...' : `Imposta "${MODE_LABELS[viewMode]}" come ufficiale`}
+            </button>
+          )}
+        </div>
+      )}
+
       {!showRanking ? (
         <div
           className="flex flex-col items-center justify-center py-12 gap-3"
@@ -74,9 +161,9 @@ export function RankingTab() {
       ) : (
         <div className="space-y-3">
           {sorted.map((dish, idx) => {
-            const score = dishScores.get(dish.id)
-            const avg = score?.avg ?? 0
-            const count = score?.count ?? 0
+            const rawScore = dishScores.get(dish.id)
+            const computedScore = rankingScores.get(dish.id) ?? 0
+            const count = rawScore?.count ?? 0
 
             return (
               <div
@@ -108,19 +195,21 @@ export function RankingTab() {
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
-                        width: `${(avg / 10) * 100}%`,
+                        width: `${(computedScore / 10) * 100}%`,
                         background: 'var(--color-ember)',
                       }}
                     />
                   </div>
                 </div>
 
-                {/* Average score + count */}
+                {/* Score + count */}
                 <span
                   className="flex-shrink-0 font-body text-xs text-right"
                   style={{ color: 'var(--color-ink-light)' }}
                 >
-                  <strong style={{ color: 'var(--color-ink)', fontSize: '0.85rem' }}>{avg.toFixed(1)}</strong>/10
+                  <strong style={{ color: 'var(--color-ink)', fontSize: '0.85rem' }}>
+                    {computedScore.toFixed(1)}
+                  </strong>/10
                   <br />
                   {count} vot{count === 1 ? 'o' : 'i'}
                 </span>
