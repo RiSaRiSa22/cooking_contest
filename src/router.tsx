@@ -1,5 +1,6 @@
 import { createHashRouter, RouterProvider, Navigate, useParams } from 'react-router'
 import { HomeScreen } from './screens/Home/HomeScreen'
+import { AdminScreen } from './screens/Admin/AdminScreen'
 import { useSessionStore } from './store/sessionStore'
 
 /**
@@ -34,12 +35,7 @@ const router = createHashRouter([
     path: '/admin/:code',
     element: (
       <RequireSession>
-        <div
-          className="min-h-screen flex items-center justify-center"
-          style={{ background: 'var(--color-ink)', color: 'var(--color-parchment)' }}
-        >
-          <p className="font-display text-2xl">Admin Panel — coming soon</p>
-        </div>
+        <AdminScreen />
       </RequireSession>
     ),
   },
