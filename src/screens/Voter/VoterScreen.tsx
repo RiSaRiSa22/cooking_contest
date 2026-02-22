@@ -4,6 +4,7 @@ import { useSessionStore } from '../../store/sessionStore'
 import { useVoterStore } from '../../store/voterStore'
 import { useVoterData } from '../../hooks/useVoterData'
 import { VoteTab } from './tabs/VoteTab'
+import { GalleryTab } from './tabs/GalleryTab'
 
 // Phase banner variant for voter (reads from voterStore, not competitionStore)
 function VoterPhaseBanner() {
@@ -124,9 +125,7 @@ export function VoterScreen() {
       {/* Scrollable content area with bottom padding for tab bar */}
       <main className="pb-24">
         {activeTab === 'vota' && <VoteTab />}
-        {activeTab === 'galleria' && (
-          <div className="px-4 py-6 text-center font-body text-ink-light">Coming soon</div>
-        )}
+        {activeTab === 'galleria' && <GalleryTab />}
         {activeTab === 'classifica' && (
           <div className="px-4 py-6 text-center font-body text-ink-light">Coming soon</div>
         )}
