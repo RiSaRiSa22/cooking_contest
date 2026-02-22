@@ -40,12 +40,12 @@ Plans:
   3. L'admin può avanzare la gara da preparation a voting a finished (con conferma, unidirezionale)
   4. Il pannello admin mostra le 4 tab (Piatti, Partecipanti, Classifica, Impostazioni) ciascuna operativa
   5. L'admin può resettare tutti i voti con conferma
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 02-01: AdminScreen shell + Tab Piatti (lista piatti, DishCard, AddDishModal con upload foto + compressione client-side)
-- [ ] 02-02: Edge Functions dish-write e dish-delete; useCompetition hook + competitionStore Zustand
-- [ ] 02-03: Tab Partecipanti, Tab Classifica (admin view), Tab Impostazioni (cambio fase + reset voti via competition-settings Edge Function)
+- [ ] 02-01-PLAN.md — Data layer (competitionStore, useCompetition, compress, usePhotoUpload) + AdminScreen shell + PhaseBanner (Wave 1)
+- [ ] 02-02-PLAN.md — Dishes vertical slice: dish-write/dish-delete EFs + Storage migration + DishCard + PhotoGrid + AddDishModal + DishesTab (Wave 2)
+- [ ] 02-03-PLAN.md — competition-settings EF + ParticipantsTab + RankingTab + SettingsTab + ParticipantCard (Wave 2)
 
 ### Phase 3: Voting + Voter Screen + Sharing
 **Goal**: I partecipanti possono votare in modo anonimo e vedere la rivelazione finale — il core value dell'app è realizzato
