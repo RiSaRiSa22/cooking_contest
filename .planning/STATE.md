@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 3 of 3 (Voting + Voter Screen + Sharing)
-Plan: 1 of 3 in phase
+Plan: 2 of 3 in phase
 Status: In progress
-Last activity: 2026-02-22 — Completed 03-01-PLAN.md (voting flow core)
+Last activity: 2026-02-22 — Completed 03-02-PLAN.md (GalleryTab + MyDishTab)
 
-Progress: [████████░░] 75% (8/10+ plans complete — estimated)
+Progress: [█████████░] 83% (9/10+ plans complete — estimated)
 
 ## Performance Metrics
 
@@ -29,7 +29,7 @@ Progress: [████████░░] 75% (8/10+ plans complete — estimat
 |-------|-------|-------|----------|
 | 01-foundation-auth | 4/4 | ~24min | ~6min |
 | 02-admin-dishes | 3/3 | ~26min | ~9min |
-| 03-voting-voter-screen-sharing | 1/3 | ~9min | ~9min |
+| 03-voting-voter-screen-sharing | 2/3 | ~17min | ~8min |
 
 **Recent Trend:**
 - Last 5 plans: 7min, 2min, 15min, 8min, 9min
@@ -65,6 +65,9 @@ Recent decisions affecting current work:
 - [02-03]: QR code via api.qrserver.com external API come <img> — evita dipendenza npm
 - [02-03]: RankingTab usa ordine alfabetico come placeholder — classifica per voti rimandata a Fase 3
 - [02-03]: competition-settings EF: fase advance unidirezionale enforced server-side
+- [03-02]: DishDetailSheet usa createPortal diretto (non Modal component) per foto hero full-width senza padding
+- [03-02]: MyDishTab mostra 'Il tuo piatto' come label (non chef_name) — dishes_public nasconde chef_name in voting
+- [03-02]: Foto extra voting: array completo (esistenti + nuove) passato a dish-write EF (pattern delete+reinsert)
 - [03-01]: VoterPhaseBanner inline in VoterScreen — PhaseBanner hardcoded su competitionStore, no refactoring cross-store
 - [03-01]: voterStore senza persist (identico a competitionStore) — server-authoritative con reset() su unmount
 - [03-01]: vote-cast usa onConflict='competition_id,participant_id' per upsert atomico 1 voto per partecipante
@@ -82,5 +85,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: 03-01-PLAN.md complete — EF scritte, VoterScreen + VoteTab funzionanti, build OK
+Stopped at: 03-02-PLAN.md complete — GalleryTab + DishDetailSheet + MyDishTab, build OK
 Resume file: N/A
