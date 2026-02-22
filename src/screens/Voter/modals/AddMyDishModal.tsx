@@ -9,12 +9,23 @@ import { useVoterStore } from '../../../store/voterStore'
 import { useSessionStore } from '../../../store/sessionStore'
 import { useParams } from 'react-router'
 
+interface EditDish {
+  id: string
+  name: string | null
+  chef_name: string | null
+  ingredients: string | null
+  recipe: string | null
+  story: string | null
+  photos: Array<{ id: string; url: string }>
+}
+
 interface AddMyDishModalProps {
   open: boolean
   onClose: () => void
+  editDish?: EditDish | null
 }
 
-export function AddMyDishModal({ open, onClose }: AddMyDishModalProps) {
+export function AddMyDishModal({ open, onClose, editDish }: AddMyDishModalProps) {
   const { code } = useParams<{ code: string }>()
   const session = useSessionStore((s) => s.getSession(code!))
   const competition = useVoterStore((s) => s.competition)
@@ -34,17 +45,30 @@ export function AddMyDishModal({ open, onClose }: AddMyDishModalProps) {
   const [story, setStory] = useState('')
   const [newFiles, setNewFiles] = useState<File[]>([])
   const [newFilePreviews, setNewFilePreviews] = useState<string[]>([])
+  const [existingPhotos, setExistingPhotos] = useState<Array<{ id: string; url: string }>>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const isEditing = !!editDish
+
   const resetForm = useCallback(() => {
-    setName('')
-    setChefName(session?.nickname ?? '')
-    setIngredients('')
-    setRecipe('')
-    setStory('')
+    if (editDish) {
+      setName(editDish.name ?? '')
+      setChefName(editDish.chef_name ?? '')
+      setIngredients(editDish.ingredients ?? '')
+      setRecipe(editDish.recipe ?? '')
+      setStory(editDish.story ?? '')
+      setExistingPhotos(editDish.photos ?? [])
+    } else {
+      setName('')
+      setChefName(session?.nickname ?? '')
+      setIngredients('')
+      setRecipe('')
+      setStory('')
+      setExistingPhotos([])
+    }
     setNewFiles([])
     setNewFilePreviews([])
-  }, [session?.nickname])
+  }, [session?.nickname, editDish])
 
   useEffect(() => {
     if (open) resetForm()
@@ -74,6 +98,10 @@ export function AddMyDishModal({ open, onClose }: AddMyDishModalProps) {
     setNewFilePreviews((prev) => prev.filter((_, i) => i !== index))
   }
 
+  function removeExistingPhoto(index: number) {
+    setExistingPhotos((prev) => prev.filter((_, i) => i !== index))
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
@@ -90,12 +118,14 @@ export function AddMyDishModal({ open, onClose }: AddMyDishModalProps) {
     setIsSubmitting(true)
 
     try {
-      const dishId = crypto.randomUUID()
+      const dishId = isEditing ? editDish!.id : crypto.randomUUID()
       let newPhotoUrls: string[] = []
 
       if (newFiles.length > 0) {
         newPhotoUrls = await uploadPhotos(newFiles, dishId)
       }
+
+      const allPhotoUrls = [...existingPhotos.map((p) => p.url), ...newPhotoUrls]
 
       const { data, error } = await supabase.functions.invoke('dish-write', {
         body: {
@@ -107,17 +137,13 @@ export function AddMyDishModal({ open, onClose }: AddMyDishModalProps) {
           ingredients: ingredients.trim(),
           recipe: recipe.trim(),
           story: story.trim(),
-          photoUrls: newPhotoUrls,
+          photoUrls: allPhotoUrls,
           isExtra: false,
         },
       })
 
       if (error) throw error
 
-      // Update voterStore: set myDishId and reload dishes
-      setMyDishId(dishId)
-
-      // Add the new dish to the dishes list (as DishPublicWithPhotos)
       const result = data as { dish: Record<string, unknown>; photos: Array<{ id: string; url: string; display_order: number }> }
       const photos = (result.photos ?? []).map((p, i) => ({
         id: p.id,
@@ -127,21 +153,38 @@ export function AddMyDishModal({ open, onClose }: AddMyDishModalProps) {
         is_extra: false,
         created_at: new Date().toISOString(),
       }))
-      const newDish = {
-        id: dishId,
-        name: name.trim(),
-        chef_name: chefName.trim(),
-        ingredients: ingredients.trim() || null,
-        recipe: recipe.trim() || null,
-        story: story.trim() || null,
-        competition_id: competition.id,
-        participant_id: null, // dishes_public hides this
-        created_at: new Date().toISOString(),
-        photos,
-      }
-      setDishes([...dishes, newDish])
 
-      showToast('Piatto aggiunto!')
+      if (isEditing) {
+        // Update existing dish in store
+        const updatedDish = {
+          ...dishes.find((d) => d.id === dishId)!,
+          name: name.trim(),
+          chef_name: chefName.trim(),
+          ingredients: ingredients.trim() || null,
+          recipe: recipe.trim() || null,
+          story: story.trim() || null,
+          photos,
+        }
+        setDishes(dishes.map((d) => (d.id === dishId ? updatedDish : d)))
+        showToast('Piatto modificato!')
+      } else {
+        setMyDishId(dishId)
+        const newDish = {
+          id: dishId,
+          name: name.trim(),
+          chef_name: chefName.trim(),
+          ingredients: ingredients.trim() || null,
+          recipe: recipe.trim() || null,
+          story: story.trim() || null,
+          competition_id: competition.id,
+          participant_id: null,
+          created_at: new Date().toISOString(),
+          photos,
+        }
+        setDishes([...dishes, newDish])
+        showToast('Piatto aggiunto!')
+      }
+
       onClose()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Errore durante il salvataggio'
@@ -154,7 +197,7 @@ export function AddMyDishModal({ open, onClose }: AddMyDishModalProps) {
   const isLoading = isSubmitting || isUploading
 
   return (
-    <Modal isOpen={open} onClose={onClose} variant="bottom-sheet" title="Aggiungi il tuo piatto">
+    <Modal isOpen={open} onClose={onClose} variant="bottom-sheet" title={isEditing ? 'Modifica il tuo piatto' : 'Aggiungi il tuo piatto'}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
           label="Nome piatto *"
@@ -222,6 +265,23 @@ export function AddMyDishModal({ open, onClose }: AddMyDishModalProps) {
             Foto
           </label>
 
+          {existingPhotos.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-1">
+              {existingPhotos.map((photo, index) => (
+                <div key={photo.id} className="relative w-20 h-20 rounded-lg overflow-hidden">
+                  <img src={photo.url} alt="Foto esistente" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => removeExistingPhoto(index)}
+                    className="absolute top-1 right-1 w-5 h-5 bg-black/60 rounded-full text-white text-xs flex items-center justify-center cursor-pointer"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           {newFilePreviews.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-1">
               {newFilePreviews.map((preview, index) => (
@@ -278,7 +338,7 @@ export function AddMyDishModal({ open, onClose }: AddMyDishModalProps) {
             disabled={isLoading}
             className="flex-1"
           >
-            {isLoading ? 'Salvataggio...' : 'Aggiungi piatto'}
+            {isLoading ? 'Salvataggio...' : isEditing ? 'Salva modifiche' : 'Aggiungi piatto'}
           </Button>
         </div>
       </form>

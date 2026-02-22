@@ -18,6 +18,7 @@ export function MyDishTab() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showAddDish, setShowAddDish] = useState(false)
+  const [showEditDish, setShowEditDish] = useState(false)
 
   const phase = competition?.phase ?? 'preparation'
 
@@ -239,18 +240,18 @@ export function MyDishTab() {
         </>
       )}
 
-      {/* Nota per fase preparation */}
+      {/* Modifica piatto in fase preparation */}
       {phase === 'preparation' && (
-        <p
-          className="font-body text-xs text-center rounded-xl py-3 px-4"
-          style={{
-            color: 'var(--color-ink-light)',
-            background: 'var(--color-parchment-dark)',
-          }}
-        >
-          Puoi modificare il piatto dal pannello admin
-        </p>
+        <Button variant="ember" size="default" onClick={() => setShowEditDish(true)}>
+          Modifica piatto
+        </Button>
       )}
+
+      <AddMyDishModal
+        open={showEditDish}
+        onClose={() => setShowEditDish(false)}
+        editDish={myDish ? { ...myDish, id: myDish.id!, name: myDish.name!, chef_name: myDish.chef_name ?? null } : null}
+      />
     </div>
   )
 }
