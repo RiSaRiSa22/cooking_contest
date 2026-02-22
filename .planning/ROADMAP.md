@@ -57,12 +57,12 @@ Plans:
   3. La schermata partecipante ha 4 tab operative: Vota, Galleria, Classifica (solo in finished), Il mio piatto
   4. Un link di condivisione join o votazione apre direttamente la schermata corretta via URL deep link
   5. L'admin può generare e mostrare un QR code per il link di condivisione
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 03-01: VoterScreen shell + Tab Vota (banner fase, status bar, lista piatti votabili) + vote-cast Edge Function
-- [ ] 03-02: Tab Galleria (griglia 3 colonne + DishDetailSheet bottom sheet) + Tab Il mio piatto (foto extra in voting)
-- [ ] 03-03: Tab Classifica con rivelazione cuochi + link condivisione (deep linking HashRouter) + QR code (qrcode.react)
+- [ ] 03-01-PLAN.md — vote-cast/vote-read EFs + voterStore + useVoterData + VoterScreen shell + VoteTab + mode=vote deep link (Wave 1)
+- [ ] 03-02-PLAN.md — DishDetailSheet + GalleryTab (griglia 3col + bottom sheet) + MyDishTab (foto extra in voting) (Wave 2)
+- [ ] 03-03-PLAN.md — RankingTab voter + admin RankingTab con voti reali + SettingsTab link/QR adattivi (Wave 2)
 
 ## Progress
 
