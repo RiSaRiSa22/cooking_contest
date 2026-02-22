@@ -7,12 +7,12 @@
 
 ### Authentication
 
-- [ ] **AUTH-01**: Admin può creare gara con nome, password (min 4 char), proprio soprannome → genera codice 6 char
-- [ ] **AUTH-02**: Partecipante può entrare in gara con codice + soprannome + PIN 4 cifre
-- [ ] **AUTH-03**: Soprannome esistente + PIN corretto → ri-autentica; PIN errato → errore
-- [ ] **AUTH-04**: Sessione salvata in localStorage con TTL 2h, modal re-auth al ritorno
-- [ ] **AUTH-05**: Ospite votante può entrare per votare senza aggiungere un piatto
-- [ ] **AUTH-06**: Fornire password admin nel campo PIN → accesso come admin
+- [x] **AUTH-01**: Admin può creare gara con nome, password (min 4 char), proprio soprannome → genera codice 6 char
+- [x] **AUTH-02**: Partecipante può entrare in gara con codice + soprannome + PIN 4 cifre
+- [x] **AUTH-03**: Soprannome esistente + PIN corretto → ri-autentica; PIN errato → errore
+- [x] **AUTH-04**: Sessione salvata in localStorage con TTL 2h, modal re-auth al ritorno
+- [x] **AUTH-05**: Ospite votante può entrare per votare senza aggiungere un piatto
+- [x] **AUTH-06**: Fornire password admin nel campo PIN → accesso come admin
 
 ### Competition
 
@@ -41,7 +41,7 @@
 
 - [ ] **SHAR-01**: Link condivisione join (?code=X&mode=join) e votazione (?code=X&mode=vote)
 - [ ] **SHAR-02**: QR code generato in-app per link di condivisione
-- [ ] **SHAR-03**: Home screen con lista gare recenti da localStorage
+- [x] **SHAR-03**: Home screen con lista gare recenti da localStorage
 
 ### Admin Panel
 
@@ -59,10 +59,10 @@
 
 ### UI/Design
 
-- [ ] **UIDN-01**: Design system completo: palette, tipografia, ombre, radius, texture grain
-- [ ] **UIDN-02**: Home screen dark con hero animato, gare recenti, CTA crea/entra
-- [ ] **UIDN-03**: Componenti: bottoni pill, form inputs, PIN input 4 box, upload zone, toast
-- [ ] **UIDN-04**: Animazioni: screenIn, sheetUp, fadeUp, popIn, flicker fiamma, pulse, spin
+- [x] **UIDN-01**: Design system completo: palette, tipografia, ombre, radius, texture grain
+- [x] **UIDN-02**: Home screen dark con hero animato, gare recenti, CTA crea/entra
+- [x] **UIDN-03**: Componenti: bottoni pill, form inputs, PIN input 4 box, upload zone, toast
+- [x] **UIDN-04**: Animazioni: screenIn, sheetUp, fadeUp, popIn, flicker fiamma, pulse, spin
 
 ## v2 Requirements
 
@@ -95,12 +95,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
-| AUTH-04 | Phase 1 | Pending |
-| AUTH-05 | Phase 1 | Pending |
-| AUTH-06 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
+| AUTH-03 | Phase 1 | Complete |
+| AUTH-04 | Phase 1 | Complete |
+| AUTH-05 | Phase 1 | Complete |
+| AUTH-06 | Phase 1 | Complete |
 | COMP-01 | Phase 2 | Pending |
 | COMP-02 | Phase 2 | Pending |
 | COMP-03 | Phase 2 | Pending |
@@ -117,7 +117,7 @@
 | VOTE-05 | Phase 3 | Pending |
 | SHAR-01 | Phase 3 | Pending |
 | SHAR-02 | Phase 3 | Pending |
-| SHAR-03 | Phase 1 | Pending |
+| SHAR-03 | Phase 1 | Complete |
 | ADMN-01 | Phase 2 | Pending |
 | ADMN-02 | Phase 2 | Pending |
 | ADMN-03 | Phase 2 | Pending |
@@ -126,10 +126,10 @@
 | VOTR-02 | Phase 3 | Pending |
 | VOTR-03 | Phase 3 | Pending |
 | VOTR-04 | Phase 3 | Pending |
-| UIDN-01 | Phase 1 | Pending |
-| UIDN-02 | Phase 1 | Pending |
-| UIDN-03 | Phase 1 | Pending |
-| UIDN-04 | Phase 1 | Pending |
+| UIDN-01 | Phase 1 | Complete |
+| UIDN-02 | Phase 1 | Complete |
+| UIDN-03 | Phase 1 | Complete |
+| UIDN-04 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 35 total
@@ -138,4 +138,4 @@
 
 ---
 *Requirements defined: 2026-02-21*
-*Last updated: 2026-02-21 after roadmap creation*
+*Last updated: 2026-02-22 after Phase 1 completion*

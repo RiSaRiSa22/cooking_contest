@@ -6,7 +6,7 @@ Tre fasi per costruire l'app completa: la Fase 1 getta le fondamenta tecniche e 
 
 ## Phases
 
-- [ ] **Phase 1: Foundation + Auth** - Scaffold, schema Supabase, design system, home screen, flusso autenticazione
+- [x] **Phase 1: Foundation + Auth** - Scaffold, schema Supabase, design system, home screen, flusso autenticazione
 - [ ] **Phase 2: Admin + Dishes** - Pannello admin completo, CRUD piatti con foto, gestione fasi gara
 - [ ] **Phase 3: Voting + Voter Screen + Sharing** - Voto anonimo, schermata partecipante, condivisione e QR code
 
@@ -25,10 +25,10 @@ Tre fasi per costruire l'app completa: la Fase 1 getta le fondamenta tecniche e 
 **Plans**: 4 plans in 3 waves
 
 Plans:
-- [ ] 01-01-PLAN.md — Scaffold Vite + React + TS + Tailwind v4 + HashRouter + GH Actions deploy (Wave 1)
-- [ ] 01-02-PLAN.md — Schema Supabase (6 tabelle + dishes_public view + bucket) + RLS + TypeScript types (Wave 1)
-- [ ] 01-03-PLAN.md — UI components (Button, Input, PinInput, Modal, Toast) + session store + home screen (Wave 2)
-- [ ] 01-04-PLAN.md — Auth Edge Functions + create/join/re-auth modals + deep links + routing (Wave 3)
+- [x] 01-01-PLAN.md — Scaffold Vite + React + TS + Tailwind v4 + HashRouter + GH Actions deploy (Wave 1)
+- [x] 01-02-PLAN.md — Schema Supabase (6 tabelle + dishes_public view + bucket) + RLS + TypeScript types (Wave 1)
+- [x] 01-03-PLAN.md — UI components (Button, Input, PinInput, Modal, Toast) + session store + home screen (Wave 2)
+- [x] 01-04-PLAN.md — Auth Edge Functions + create/join/re-auth modals + deep links + routing (Wave 3)
 
 ### Phase 2: Admin + Dishes
 **Goal**: L'admin ha pieno controllo sulla gara — può gestire piatti, partecipanti, fase e impostazioni
@@ -71,6 +71,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Auth | 0/4 | Not started | - |
+| 1. Foundation + Auth | 4/4 | Complete | 2026-02-22 |
 | 2. Admin + Dishes | 0/3 | Not started | - |
 | 3. Voting + Voter Screen + Sharing | 0/3 | Not started | - |
