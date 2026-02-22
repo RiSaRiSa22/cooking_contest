@@ -6,13 +6,21 @@ const MEDALS = ['🥇', '🥈', '🥉']
 export function RankingTab() {
   const competition = useCompetitionStore((s) => s.competition)
   const dishes = useCompetitionStore((s) => s.dishes)
+  const voteCounts = useCompetitionStore((s) => s.voteCounts)
   const [revealChefs, setRevealChefs] = useState(false)
 
   const phase = competition?.phase ?? 'preparation'
   const showRanking = phase === 'voting' || phase === 'finished'
 
-  // Sort alphabetically by name (vote-based ranking deferred to Phase 3)
-  const sorted = [...dishes].sort((a, b) => a.name.localeCompare(b.name))
+  const totalVotes = Array.from(voteCounts.values()).reduce((sum, c) => sum + c, 0)
+
+  // Sort by vote count DESC, ties broken alphabetically
+  const sorted = [...dishes].sort((a, b) => {
+    const countA = voteCounts.get(a.id) ?? 0
+    const countB = voteCounts.get(b.id) ?? 0
+    if (countB !== countA) return countB - countA
+    return a.name.localeCompare(b.name)
+  })
 
   return (
     <div className="px-4 py-6">
@@ -67,43 +75,59 @@ export function RankingTab() {
         </p>
       ) : (
         <div className="space-y-3">
-          {sorted.map((dish, idx) => (
-            <div
-              key={dish.id}
-              className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm"
-              style={{ border: '1px solid var(--color-parchment-deep)' }}
-            >
-              {/* Medal / rank */}
-              <span className="text-2xl flex-shrink-0 w-8 text-center">
-                {MEDALS[idx] ?? `${idx + 1}`}
-              </span>
+          {sorted.map((dish, idx) => {
+            const count = voteCounts.get(dish.id) ?? 0
+            const percentage = totalVotes > 0 ? (count / totalVotes) * 100 : 0
 
-              {/* Dish info */}
-              <div className="flex-1 min-w-0">
-                <p
-                  className="font-body text-sm font-semibold truncate"
-                  style={{ color: 'var(--color-ink)' }}
-                >
-                  {dish.name}
-                </p>
-                <p className="font-body text-xs" style={{ color: 'var(--color-ink-light)' }}>
-                  {revealChefs ? dish.chef_name : '???'}
-                </p>
-              </div>
-
-              {/* Vote count — Phase 3 */}
-              <span
-                className="flex-shrink-0 font-body text-xs"
-                style={{ color: 'var(--color-ink-light)' }}
+            return (
+              <div
+                key={dish.id}
+                className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm"
+                style={{ border: '1px solid var(--color-parchment-deep)' }}
               >
-                — voti
-              </span>
-            </div>
-          ))}
+                {/* Medal / rank */}
+                <span className="text-2xl flex-shrink-0 w-8 text-center">
+                  {MEDALS[idx] ?? `${idx + 1}`}
+                </span>
 
-          <p className="font-body text-xs text-center pt-2" style={{ color: 'var(--color-ink-light)' }}>
-            Classifica provvisoria · conteggio voti disponibile nella Fase 3
-          </p>
+                {/* Dish info */}
+                <div className="flex-1 min-w-0">
+                  <p
+                    className="font-body text-sm font-semibold truncate"
+                    style={{ color: 'var(--color-ink)' }}
+                  >
+                    {dish.name}
+                  </p>
+                  <p className="font-body text-xs mb-1" style={{ color: 'var(--color-ink-light)' }}>
+                    {revealChefs ? dish.chef_name : '???'}
+                  </p>
+                  {/* Progress bar */}
+                  <div
+                    className="h-1.5 rounded-full overflow-hidden"
+                    style={{ background: 'var(--color-parchment-deep)' }}
+                  >
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${percentage}%`,
+                        background: 'var(--color-ember)',
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Vote count + percentage */}
+                <span
+                  className="flex-shrink-0 font-body text-xs text-right"
+                  style={{ color: 'var(--color-ink-light)' }}
+                >
+                  {count} vot{count === 1 ? 'o' : 'i'}
+                  <br />
+                  ({percentage.toFixed(0)}%)
+                </span>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

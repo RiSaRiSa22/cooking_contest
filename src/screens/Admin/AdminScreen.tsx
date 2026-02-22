@@ -24,7 +24,8 @@ export function AdminScreen() {
   const [activeTab, setActiveTab] = useState<Tab>('piatti')
 
   // Load competition data and subscribe to Realtime phase changes
-  useCompetition(session!.competitionId)
+  // Pass participantId so useCompetition can also load vote counts via vote-read EF
+  useCompetition(session!.competitionId, session!.participantId ?? undefined)
 
   const competition = useCompetitionStore((s) => s.competition)
   const isLoading = useCompetitionStore((s) => s.isLoading)

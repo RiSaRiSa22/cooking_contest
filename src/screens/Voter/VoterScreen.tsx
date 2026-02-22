@@ -5,6 +5,8 @@ import { useVoterStore } from '../../store/voterStore'
 import { useVoterData } from '../../hooks/useVoterData'
 import { VoteTab } from './tabs/VoteTab'
 import { GalleryTab } from './tabs/GalleryTab'
+import { RankingTab } from './tabs/RankingTab'
+import { MyDishTab } from './tabs/MyDishTab'
 
 // Phase banner variant for voter (reads from voterStore, not competitionStore)
 function VoterPhaseBanner() {
@@ -126,12 +128,8 @@ export function VoterScreen() {
       <main className="pb-24">
         {activeTab === 'vota' && <VoteTab />}
         {activeTab === 'galleria' && <GalleryTab />}
-        {activeTab === 'classifica' && (
-          <div className="px-4 py-6 text-center font-body text-ink-light">Coming soon</div>
-        )}
-        {activeTab === 'il-mio-piatto' && (
-          <div className="px-4 py-6 text-center font-body text-ink-light">Coming soon</div>
-        )}
+        {activeTab === 'classifica' && <RankingTab />}
+        {activeTab === 'il-mio-piatto' && <MyDishTab />}
       </main>
 
       {/* Fixed bottom tab bar — 64px */}
