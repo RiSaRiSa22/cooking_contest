@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** Partecipanti votano piatti in modo anonimo e vedono la classifica finale con rivelazione dei cuochi
-**Current focus:** Phase 2 — Admin + Dishes (02-03 complete, awaiting human-verify checkpoint)
+**Current focus:** Phase 2 — Admin + Dishes (02-02 and 02-03 complete, both awaiting human-verify checkpoint)
 
 ## Current Position
 
 Phase: 2 of 3 (Admin + Dishes)
-Plan: 3 of 3 in phase (02-03 complete, pending human verification)
-Status: Checkpoint — awaiting human-verify (all 4 admin tabs)
-Last activity: 2026-02-22 — Completed 02-03-PLAN.md (checkpoint pending)
+Plan: 2+3 of 3 in phase (02-02 and 02-03 complete, both pending human verification)
+Status: Checkpoint — awaiting human-verify (dishes CRUD + all 4 admin tabs)
+Last activity: 2026-02-22 — Completed 02-02-PLAN.md (checkpoint pending)
 
-Progress: [███████░░░] 65% (02-01, 02-03 complete; 02-02 parallel; 7/10 approx plans done)
+Progress: [████████░░] 70% (02-01, 02-02, 02-03 code complete; pending human verification; ~8/10 approx plans done)
 
 ## Performance Metrics
 
@@ -64,6 +64,9 @@ Recent decisions affecting current work:
 - [02-01]: Admin legge da dishes table direttamente (non dishes_public) — chef_name visibile in tutte le fasi
 - [02-01]: Tab navigation via useState — niente sub-routes per tab admin, stato ephemero
 - [02-01]: getPublicUrl è sincrono (no await) — deriva URL dal path senza network call
+- [02-02]: dishId pre-generato client-side (crypto.randomUUID) prima dell'upload — EF accetta UUID come PK esplicito
+- [02-02]: Photo UPSERT = delete+reinsert — semplifica gestione ordine, evita conflitti
+- [02-02]: dish-delete Storage cleanup non-fatal — log errore ma prosegue con DB delete
 - [02-03]: QR code via api.qrserver.com external API come <img> — evita dipendenza npm
 - [02-03]: Toast API usa solo show(string) — nessun variant type; wrapper inline in SettingsTab
 - [02-03]: RankingTab usa ordine alfabetico come placeholder — classifica per voti rimandata a Fase 3
@@ -71,17 +74,17 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- [02-02]: usePhotoUpload restituirà 403 finché la migration anon Storage INSERT policy non è aggiunta
+- [02-02 DONE]: anon_upload_dish_photos policy applicata — foto upload ora funzionale
 - [02-03]: competition-settings Edge Function da deployare con `npx supabase functions deploy competition-settings --no-verify-jwt` dopo `supabase login`
 
 ### Blockers/Concerns
 
 - [Phase 2]: RLS testing deve avvenire via SDK client con credenziali anon reali, NON da Supabase Studio (superuser bypassa RLS)
-- [Phase 2]: Foto upload bloccato finché 02-02 non aggiunge policy `anon_upload_dish_photos` su storage.objects
+- [Phase 2]: Foto upload SBLOCCATO — policy `anon_upload_dish_photos` applicata in 02-02
 - [02-03]: competition-settings EF non ancora deployata — necessita autenticazione CLI
 
 ## Session Continuity
 
-Last session: 2026-02-22T00:40:00Z
-Stopped at: 02-03 checkpoint:human-verify — all 4 admin tabs built, awaiting visual verification
+Last session: 2026-02-22T01:44:00Z
+Stopped at: 02-02 checkpoint:human-verify — dishes CRUD complete, awaiting visual verification
 Resume file: None
