@@ -31,16 +31,16 @@
 
 ### Voting
 
-- [ ] **VOTE-01**: Partecipante vota esattamente 1 piatto in fase voting (non il proprio)
-- [ ] **VOTE-02**: Voto può essere cambiato (sovrascrive il precedente)
-- [ ] **VOTE-03**: Nomi cuochi nascosti a partecipanti durante preparation e voting
-- [ ] **VOTE-04**: Classifica con ordinamento voti, medaglie top 3, percentuali, barra progresso
-- [ ] **VOTE-05**: In fase finished, nomi cuochi rivelati; admin ha toggle reveal
+- [x] **VOTE-01**: Partecipante vota esattamente 1 piatto in fase voting (non il proprio)
+- [x] **VOTE-02**: Voto può essere cambiato (sovrascrive il precedente)
+- [x] **VOTE-03**: Nomi cuochi nascosti a partecipanti durante preparation e voting
+- [x] **VOTE-04**: Classifica con ordinamento voti, medaglie top 3, percentuali, barra progresso
+- [x] **VOTE-05**: In fase finished, nomi cuochi rivelati; admin ha toggle reveal
 
 ### Sharing
 
-- [ ] **SHAR-01**: Link condivisione join (?code=X&mode=join) e votazione (?code=X&mode=vote)
-- [ ] **SHAR-02**: QR code generato in-app per link di condivisione
+- [x] **SHAR-01**: Link condivisione join (?code=X&mode=join) e votazione (?code=X&mode=vote)
+- [x] **SHAR-02**: QR code generato in-app per link di condivisione
 - [x] **SHAR-03**: Home screen con lista gare recenti da localStorage
 
 ### Admin Panel
@@ -52,10 +52,10 @@
 
 ### Voter Screen
 
-- [ ] **VOTR-01**: Tab Vota — banner fase, status bar voto, lista piatti votabili con card espandibili
-- [ ] **VOTR-02**: Tab Galleria — griglia 3 colonne, tap → bottom sheet dettaglio piatto
-- [ ] **VOTR-03**: Tab Classifica — visibile solo in fase finished
-- [ ] **VOTR-04**: Tab Il mio piatto — modifica in preparation, read-only + foto extra in voting
+- [x] **VOTR-01**: Tab Vota — banner fase, status bar voto, lista piatti votabili con card espandibili
+- [x] **VOTR-02**: Tab Galleria — griglia 3 colonne, tap → bottom sheet dettaglio piatto
+- [x] **VOTR-03**: Tab Classifica — visibile solo in fase finished
+- [x] **VOTR-04**: Tab Il mio piatto — modifica in preparation, read-only + foto extra in voting
 
 ### UI/Design
 
@@ -110,22 +110,22 @@
 | DISH-04 | Phase 2 | Complete |
 | DISH-05 | Phase 2 | Complete |
 | DISH-06 | Phase 2 | Complete |
-| VOTE-01 | Phase 3 | Pending |
-| VOTE-02 | Phase 3 | Pending |
-| VOTE-03 | Phase 3 | Pending |
-| VOTE-04 | Phase 3 | Pending |
-| VOTE-05 | Phase 3 | Pending |
-| SHAR-01 | Phase 3 | Pending |
-| SHAR-02 | Phase 3 | Pending |
+| VOTE-01 | Phase 3 | Complete |
+| VOTE-02 | Phase 3 | Complete |
+| VOTE-03 | Phase 3 | Complete |
+| VOTE-04 | Phase 3 | Complete |
+| VOTE-05 | Phase 3 | Complete |
+| SHAR-01 | Phase 3 | Complete |
+| SHAR-02 | Phase 3 | Complete |
 | SHAR-03 | Phase 1 | Complete |
 | ADMN-01 | Phase 2 | Complete |
 | ADMN-02 | Phase 2 | Complete |
 | ADMN-03 | Phase 2 | Complete |
 | ADMN-04 | Phase 2 | Complete |
-| VOTR-01 | Phase 3 | Pending |
-| VOTR-02 | Phase 3 | Pending |
-| VOTR-03 | Phase 3 | Pending |
-| VOTR-04 | Phase 3 | Pending |
+| VOTR-01 | Phase 3 | Complete |
+| VOTR-02 | Phase 3 | Complete |
+| VOTR-03 | Phase 3 | Complete |
+| VOTR-04 | Phase 3 | Complete |
 | UIDN-01 | Phase 1 | Complete |
 | UIDN-02 | Phase 1 | Complete |
 | UIDN-03 | Phase 1 | Complete |
@@ -138,4 +138,4 @@
 
 ---
 *Requirements defined: 2026-02-21*
-*Last updated: 2026-02-22 after Phase 2 completion*
+*Last updated: 2026-02-22 after Phase 3 completion*

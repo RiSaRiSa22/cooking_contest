@@ -8,7 +8,7 @@ Tre fasi per costruire l'app completa: la Fase 1 getta le fondamenta tecniche e 
 
 - [x] **Phase 1: Foundation + Auth** - Scaffold, schema Supabase, design system, home screen, flusso autenticazione
 - [x] **Phase 2: Admin + Dishes** - Pannello admin completo, CRUD piatti con foto, gestione fasi gara
-- [ ] **Phase 3: Voting + Voter Screen + Sharing** - Voto anonimo, schermata partecipante, condivisione e QR code
+- [x] **Phase 3: Voting + Voter Screen + Sharing** - Voto anonimo, schermata partecipante, condivisione e QR code
 
 ## Phase Details
 
@@ -60,9 +60,9 @@ Plans:
 **Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 03-01-PLAN.md — vote-cast/vote-read EFs + voterStore + useVoterData + VoterScreen shell + VoteTab + mode=vote deep link (Wave 1)
-- [ ] 03-02-PLAN.md — DishDetailSheet + GalleryTab (griglia 3col + bottom sheet) + MyDishTab (foto extra in voting) (Wave 2)
-- [ ] 03-03-PLAN.md — RankingTab voter + admin RankingTab con voti reali + SettingsTab link/QR adattivi (Wave 2)
+- [x] 03-01-PLAN.md — vote-cast/vote-read EFs + voterStore + useVoterData + VoterScreen shell + VoteTab + mode=vote deep link (Wave 1)
+- [x] 03-02-PLAN.md — DishDetailSheet + GalleryTab (griglia 3col + bottom sheet) + MyDishTab (foto extra in voting) (Wave 2)
+- [x] 03-03-PLAN.md — RankingTab voter + admin RankingTab con voti reali + SettingsTab link/QR adattivi (Wave 2)
 
 ## Progress
 
@@ -73,4 +73,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Foundation + Auth | 4/4 | Complete | 2026-02-22 |
 | 2. Admin + Dishes | 3/3 | Complete | 2026-02-22 |
-| 3. Voting + Voter Screen + Sharing | 0/3 | Not started | - |
+| 3. Voting + Voter Screen + Sharing | 3/3 | Complete | 2026-02-22 |
