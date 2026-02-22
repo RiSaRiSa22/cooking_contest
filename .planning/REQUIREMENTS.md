@@ -12,7 +12,7 @@
 - [x] **AUTH-03**: Soprannome esistente + PIN corretto → ri-autentica; PIN errato → errore
 - [x] **AUTH-04**: Sessione salvata in localStorage con TTL 2h, modal re-auth al ritorno
 - [x] **AUTH-05**: Ospite votante può entrare per votare senza aggiungere un piatto
-- [x] **AUTH-06**: Fornire password admin nel campo PIN → accesso come admin
+- ~~**AUTH-06**: Fornire password admin nel campo PIN → accesso come admin~~ — **Rimosso**: l'utente ha deciso che nickname+PIN errato deve fallire, niente fallback admin
 
 ### Competition
 
@@ -100,7 +100,7 @@
 | AUTH-03 | Phase 1 | Complete |
 | AUTH-04 | Phase 1 | Complete |
 | AUTH-05 | Phase 1 | Complete |
-| AUTH-06 | Phase 1 | Complete |
+| AUTH-06 | Phase 1 | Removed |
 | COMP-01 | Phase 2 | Pending |
 | COMP-02 | Phase 2 | Pending |
 | COMP-03 | Phase 2 | Pending |

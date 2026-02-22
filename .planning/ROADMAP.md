@@ -15,7 +15,7 @@ Tre fasi per costruire l'app completa: la Fase 1 getta le fondamenta tecniche e 
 ### Phase 1: Foundation + Auth
 **Goal**: Chiunque può creare una gara o entrarci — la base tecnica e il flusso identità funzionano end-to-end
 **Depends on**: Nothing (first phase)
-**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, SHAR-03, UIDN-01, UIDN-02, UIDN-03, UIDN-04
+**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, SHAR-03, UIDN-01, UIDN-02, UIDN-03, UIDN-04
 **Success Criteria** (what must be TRUE):
   1. Un admin può creare una gara, ricevere un codice 6 caratteri e accedere al pannello admin
   2. Un partecipante può entrare in una gara con codice + soprannome + PIN e vedere la propria schermata

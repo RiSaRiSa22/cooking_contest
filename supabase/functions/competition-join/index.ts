@@ -108,31 +108,7 @@ Deno.serve(async (req) => {
         )
       }
 
-      // Check admin PIN (AUTH-06: admin password grants admin access)
-      if (competition.admin_pwd_hash === pinHash) {
-        // Find the admin participant record for this competition
-        const { data: adminParticipant } = await supabase
-          .from('participants')
-          .select('id, nickname, role')
-          .eq('competition_id', competition.id)
-          .eq('role', 'admin')
-          .maybeSingle()
-
-        if (adminParticipant) {
-          return new Response(
-            JSON.stringify({
-              competitionId: competition.id,
-              participantId: adminParticipant.id,
-              nickname: adminParticipant.nickname,
-              role: 'admin',
-              competitionName: competition.name,
-            }),
-            { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
-          )
-        }
-      }
-
-      // Neither PIN matched
+      // PIN doesn't match — fail
       return new Response(
         JSON.stringify({ error: 'PIN errato' }),
         { status: 401, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
