@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 3 of 3 (Voting + Voter Screen + Sharing)
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-02-22 — Phase 2 complete and verified
+Plan: 1 of 3 in phase
+Status: In progress
+Last activity: 2026-02-22 — Completed 03-01-PLAN.md (voting flow core)
 
-Progress: [███████░░░] 67% (2/3 phases complete)
+Progress: [████████░░] 75% (8/10+ plans complete — estimated)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: ~7min
-- Total execution time: ~50min
+- Total execution time: ~59min
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: [███████░░░] 67% (2/3 phases complete)
 |-------|-------|-------|----------|
 | 01-foundation-auth | 4/4 | ~24min | ~6min |
 | 02-admin-dishes | 3/3 | ~26min | ~9min |
+| 03-voting-voter-screen-sharing | 1/3 | ~9min | ~9min |
 
 **Recent Trend:**
-- Last 5 plans: 3min, 7min, 2min, 15min, 8min
+- Last 5 plans: 7min, 2min, 15min, 8min, 9min
 - Trend: stable
 
 *Updated after each plan completion*
@@ -64,20 +65,22 @@ Recent decisions affecting current work:
 - [02-03]: QR code via api.qrserver.com external API come <img> — evita dipendenza npm
 - [02-03]: RankingTab usa ordine alfabetico come placeholder — classifica per voti rimandata a Fase 3
 - [02-03]: competition-settings EF: fase advance unidirezionale enforced server-side
+- [03-01]: VoterPhaseBanner inline in VoterScreen — PhaseBanner hardcoded su competitionStore, no refactoring cross-store
+- [03-01]: voterStore senza persist (identico a competitionStore) — server-authoritative con reset() su unmount
+- [03-01]: vote-cast usa onConflict='competition_id,participant_id' per upsert atomico 1 voto per partecipante
+- [03-01]: voteCounts aggregati lato JS da array flat (Map dish_id → count) — 5-20 righe, no rpc() overengineering
 
 ### Pending Todos
 
-None for Phase 2.
+- [03-01]: Deployare vote-cast e vote-read EF via supabase-local MCP con verify_jwt: false
 
 ### Blockers/Concerns
 
-- [Phase 3]: VoterScreen deve leggere da dishes_public (non dishes) — chef_name nascosto in preparation e voting
-- [Phase 3]: vote-cast EF deve verificare: phase===voting, 1 voto max, non il proprio piatto
-- [Phase 3]: Router /voter/:code ha placeholder — VoterScreen lo sostituirà
-- [Phase 3]: Non-admin possono accedere a /admin/:code se hanno sessione valida — considerare guardia ruolo
+- [03-01]: vote-cast e vote-read EF scritte ma non deployate — CLI richiede SUPABASE_ACCESS_TOKEN non disponibile in bash. Orchestratore deve deployare via MCP prima del testing.
+- [Phase 3]: Non-admin possono accedere a /admin/:code se hanno sessione valida — considerare guardia ruolo (non urgente)
 
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Phase 2 complete — ready for Phase 3 planning
+Stopped at: 03-01-PLAN.md complete — EF scritte, VoterScreen + VoteTab funzionanti, build OK
 Resume file: N/A
