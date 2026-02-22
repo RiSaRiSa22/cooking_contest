@@ -85,7 +85,17 @@ Deno.serve(async (req) => {
     }
 
     const isAdmin = participant.role === 'admin'
-    const isEditing = !!dishId
+
+    // Determine create vs edit: dishId may be provided for creates too (client pre-generates UUID for photo upload paths)
+    let isEditing = false
+    if (dishId) {
+      const { data: existingDish } = await supabase
+        .from('dishes')
+        .select('id')
+        .eq('id', dishId)
+        .maybeSingle()
+      isEditing = !!existingDish
+    }
 
     // 2. Non-admin authorization checks
     if (!isAdmin) {
