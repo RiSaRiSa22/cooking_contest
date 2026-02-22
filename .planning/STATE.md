@@ -10,28 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Phase: 2 of 3 (Admin + Dishes)
-Plan: Not started
-Status: Ready for planning
-Last activity: 2026-02-22 — Phase 1 complete and verified
+Plan: 1 of 3 in phase (02-01 complete)
+Status: In progress
+Last activity: 2026-02-22 — Completed 02-01-PLAN.md
 
-Progress: [████░░░░░░] 33% (1/3 phases complete)
+Progress: [█████░░░░░] 40% (02-01 complete: 5/7 total plans done — counting 01-04 as ~4 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: ~6min
-- Total execution time: ~24min
+- Total plans completed: 5
+- Average duration: ~5min
+- Total execution time: ~26min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation-auth | 4/4 | ~24min | ~6min |
+| 02-admin-dishes | 1/3 | ~2min | ~2min |
 
 **Recent Trend:**
-- Last 5 plans: 4min, 5min, 3min, 7min
-- Trend: stable
+- Last 5 plans: 4min, 5min, 3min, 7min, 2min
+- Trend: stable/improving
 
 *Updated after each plan completion*
 
@@ -59,19 +60,22 @@ Recent decisions affecting current work:
 - [01-04]: Edge Functions deployate con verify_jwt: false via supabase-local MCP
 - [01-04-fix]: getAllSessions() ritorna TUTTE le sessioni con flag `expired` — non filtra quelle scadute
 - [01-04-fix]: AUTH-06 admin fallback: competition-join restituisce il record partecipante admin, non quello del richiedente
+- [02-01]: competitionStore senza persist middleware — server-authoritative, reset() obbligatorio sull'unmount di AdminScreen
+- [02-01]: Admin legge da dishes table direttamente (non dishes_public) — chef_name visibile in tutte le fasi
+- [02-01]: Tab navigation via useState — niente sub-routes per tab admin, stato ephemero
+- [02-01]: getPublicUrl è sincrono (no await) — deriva URL dal path senza network call
 
 ### Pending Todos
 
-None for Phase 1.
+- [02-02]: usePhotoUpload restituirà 403 finché la migration anon Storage INSERT policy non è aggiunta
 
 ### Blockers/Concerns
 
 - [Phase 2]: RLS testing deve avvenire via SDK client con credenziali anon reali, NON da Supabase Studio (superuser bypassa RLS)
-- [Phase 2]: PIN rate limiting: login_attempts table esiste (creata in 01-02), Edge Functions lo usano correttamente
-- [Phase 2]: Foto upload richiede compressione client-side (800px max, 0.72 JPEG) prima dell'upload a Supabase Storage
+- [Phase 2]: Foto upload bloccato finché 02-02 non aggiunge policy `anon_upload_dish_photos` su storage.objects
 
 ## Session Continuity
 
-Last session: 2026-02-22
-Stopped at: Phase 1 complete — ready for Phase 2 planning
-Resume file: N/A
+Last session: 2026-02-22T00:25:32Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None
