@@ -4,6 +4,7 @@ import { useSessionStore } from '../../store/sessionStore'
 import { useCompetitionStore } from '../../store/competitionStore'
 import { useCompetition } from '../../hooks/useCompetition'
 import { PhaseBanner } from '../../components/competition/PhaseBanner'
+import { DishesTab } from './tabs/DishesTab'
 import { ParticipantsTab } from './tabs/ParticipantsTab'
 import { RankingTab } from './tabs/RankingTab'
 import { SettingsTab } from './tabs/SettingsTab'
@@ -74,13 +75,7 @@ export function AdminScreen() {
 
       {/* Scrollable content area with bottom padding for tab bar */}
       <main className="pb-24">
-        {activeTab === 'piatti' && (
-          <div className="px-4 py-6">
-            <p className="font-body text-ink-light text-sm text-center">
-              Tab Piatti — coming soon
-            </p>
-          </div>
-        )}
+        {activeTab === 'piatti' && <DishesTab />}
         {activeTab === 'partecipanti' && <ParticipantsTab />}
         {activeTab === 'classifica' && <RankingTab />}
         {activeTab === 'impostazioni' && <SettingsTab />}
